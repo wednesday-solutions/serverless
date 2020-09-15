@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "region": "ap-south-1",
+  "userPoolId": "ap-south-1_hOwSgB5JM",
+  "userName": "55c6369d-8954-4a6b-a547-a2a4cfd5012a",
+  "callerContext": {
+    "awsSdkVersion": "aws-sdk-unknown-unknown",
+    "clientId": "65rkr7ut8jssg4an5ippee0j62"
+  },
+  "triggerSource": "VerifyAuthChallengeResponse_Authentication",
+  "request": {
+    "userAttributes": {
+      "sub": "55c6369d-8954-4a6b-a547-a2a4cfd5012a",
+      "email_verified": "false",
+      "cognito:user_status": "CONFIRMED",
+      "name": "Mac",
+      "cognito:phone_number_alias": "+919049731761",
+      "phone_number_verified": "true",
+      "phone_number": "+919049731761",
+      "email": "mac@wednesday.is"
+    },
+    "privateChallengeParameters": {
+      "secretLoginCode": "8034"
+    },
+    "challengeAnswer": "8034"
+  },
+  "response": {
+    "answerCorrect": null
+  }
+}
