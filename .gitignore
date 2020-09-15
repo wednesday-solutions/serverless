@@ -1,2 +1,6 @@
 .idea/
 .serverless
+aws/srp/.env
+!aws/srp/.env.local
+**/yarn-error.log
+**/node_modules/

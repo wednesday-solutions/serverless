@@ -1,0 +1,18 @@
+{
+  "name": "wednesday-aws-srp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "sls package --stage=dev",
+    "deploy-dev": "sls deploy --stage=dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serverless-dotenv-plugin": "^3.0.0"
+  },
+  "devDependencies": {
+    "serverless": "^2.0.0"
+  }
+}

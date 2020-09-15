@@ -1,0 +1,82 @@
+service:
+  name: ${env:NAME}
+plugins:
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  versionFunctions: false
+
+resources:
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${env:NAME}-${env:STAGE}-user-pool
+        AutoVerifiedAttributes:
+          - email
+        MfaConfiguration: "OFF"
+        UsernameAttributes:
+          - email
+        EmailConfiguration:
+          ReplyToEmailAddress: support@wednesday.is
+        EmailVerificationMessage: Your verification code is {####}.
+        EmailVerificationSubject: Your verification code
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: True
+            RequireNumbers: True
+            RequireSymbols: True
+            RequireUppercase: True
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            Mutable: false
+            Required: true
+          - Name: password
+            AttributeDataType: String
+            Mutable: true
+            Required: false
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:service.name}-${self:provider.stage}-user-pool-client
+        GenerateSecret: false
+        SupportedIdentityProviders:
+          - COGNITO
+        CallbackURLs:
+          - ${env:CALLBACK_URL}
+        LogoutURLs:
+          - ${env:LOGOUT_URL}
+        AllowedOAuthFlows:
+          - implicit
+        AllowedOAuthScopes:
+          - email
+          - openid
+          - aws.cognito.signin.user.admin
+          - profile
+          - phone
+        ExplicitAuthFlows:
+          - ALLOW_REFRESH_TOKEN_AUTH
+          - ALLOW_USER_SRP_AUTH
+        AllowedOAuthFlowsUserPoolClient: true
+        UserPoolId: !Ref CognitoUserPool
+
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain: ${self:service.name}-${self:provider.stage}
+        UserPoolId: !Ref CognitoUserPool
+
+  Outputs:
+    UserPoolId:
+      Description: The Id of the CognitoUserPool
+      Value: !Ref CognitoUserPool
+    UserPoolClientId:
+      Description: The Id of the UserPoolClientId
+      Value: !Ref CognitoUserPoolClient
