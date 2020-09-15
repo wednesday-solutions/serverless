@@ -1,0 +1,170 @@
+service:
+  name: ${env:NAME}
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  versionFunctions: false
+
+package:
+  individually: true
+custom:
+  userPoolName: ${env:NAME}-${env:STAGE}-user-pool
+  webpack:
+    includeModules: true
+    excludeFiles: ./**/*.test.js
+functions:
+  - createAuthChallenge:
+      handler: functions/cognito-triggers/create-auth-challenge/index.handler
+      role: LambdaSnsRole
+      dependsOn:
+        - CognitoUserPool
+        - LambdaSnsRole
+      events:
+        - cognitoUserPool:
+            trigger: CreateAuthChallenge
+            pool: ${self:custom.userPoolName}
+            existing: true
+  - verifyAuthChallenge:
+      handler: functions/cognito-triggers/verify-auth-challenge/index.handler
+      dependsOn:
+        - CognitoUserPool
+      events:
+        - cognitoUserPool:
+            trigger: VerifyAuthChallengeResponse
+            pool: ${self:custom.userPoolName}
+            existing: true
+  - defineAuthChallenge:
+      handler: functions/cognito-triggers/define-auth-challenge/index.handler
+      dependsOn:
+        - CognitoUserPool
+      events:
+        - cognitoUserPool:
+            trigger: DefineAuthChallenge
+            pool: ${self:custom.userPoolName}
+            existing: true
+resources:
+  Resources:
+    SnsPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        Description: Managed policy to provide access to SNS
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowSNSPublishing
+              Effect: Allow
+              Action:
+                - sns:publish
+              Resource: "*"
+    LambdaPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      DependsOn:
+        - SnsPolicy
+      Properties:
+        Description: Managed policy to provide access to SNS
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - "Fn::Join":
+                    - ":"
+                    - - "arn:aws:logs"
+                      - Ref: "AWS::Region"
+                      - Ref: "AWS::AccountId"
+                      - "log-group:/aws/lambda/*:*:*"
+    LambdaSnsRole:
+      Type: AWS::IAM::Role
+      Description: "An IAM Role to allow Lambdas to access SNS"
+      DependsOn:
+        - LambdaPolicy
+        - SnsPolicy
+      Properties:
+        RoleName: ${self:service.name}-${self:provider.stage}-lambda-sns-role
+        ManagedPolicyArns:
+          - Ref: SnsPolicy
+          - Ref: LambdaPolicy
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+                  - cognito-idp.amazonaws.com
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      DependsOn:
+        - LambdaSnsRole
+      Properties:
+        UserPoolName: ${self:custom.userPoolName}
+        AutoVerifiedAttributes:
+          - phone_number
+        MfaConfiguration: "OFF"
+        UsernameAttributes:
+          - phone_number
+        SmsConfiguration:
+          ExternalId: ${self:service.name}-${self:provider.stage}-external
+          SnsCallerArn: !GetAtt LambdaSnsRole.Arn
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: True
+            RequireNumbers: True
+            RequireSymbols: True
+            RequireUppercase: True
+        Schema:
+          - Name: phone_number
+            AttributeDataType: String
+            Mutable: false
+            Required: true
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:service.name}-${self:provider.stage}-user-pool-client
+        GenerateSecret: false
+        SupportedIdentityProviders:
+          - COGNITO
+        CallbackURLs:
+          - ${env:CALLBACK_URL}
+        LogoutURLs:
+          - ${env:LOGOUT_URL}
+        AllowedOAuthFlows:
+          - implicit
+        AllowedOAuthScopes:
+          - email
+          - openid
+          - aws.cognito.signin.user.admin
+          - profile
+          - phone
+        ExplicitAuthFlows:
+          - ALLOW_REFRESH_TOKEN_AUTH
+          - ALLOW_CUSTOM_AUTH
+        AllowedOAuthFlowsUserPoolClient: true
+        UserPoolId: !Ref CognitoUserPool
+
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain: ${self:service.name}-${self:provider.stage}
+        UserPoolId: !Ref CognitoUserPool
+
+  Outputs:
+    UserPoolId:
+      Description: The Id of the CognitoUserPool
+      Value: !Ref CognitoUserPool
+    UserPoolClientId:
+      Description: The Id of the UserPoolClientId
+      Value: !Ref CognitoUserPoolClient
