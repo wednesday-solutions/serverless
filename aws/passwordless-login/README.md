@@ -1,4 +1,4 @@
-# Passwordless Login
+# AWS Cognito Passwordless Login
 
 ## sign up
 ```
