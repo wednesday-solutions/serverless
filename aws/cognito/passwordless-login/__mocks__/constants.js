@@ -5,6 +5,6 @@ export const CONSTANTS = {
   name: 'John Doe',
   email: 'john@doe.com',
   phoneNumber: '+910123456789',
-  code: '0000',
+  code: '200000',
   message: 'this is a dummy message'
 };

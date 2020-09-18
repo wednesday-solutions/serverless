@@ -10,7 +10,7 @@ exports.handler = async event => {
     // Generate a new secret login code and send it to the user
     code = Date.now()
       .toString()
-      .slice(-4);
+      .slice(-6);
     try {
       await sendSMS(
         event.request.userAttributes.phone_number,
