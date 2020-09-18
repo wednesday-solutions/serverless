@@ -1,5 +1,5 @@
 {
-  "name": "wednesday-aws-srp",
+  "name": "wednesday-aws-passwordless-login",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
