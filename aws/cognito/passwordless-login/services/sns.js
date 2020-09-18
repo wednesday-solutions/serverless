@@ -31,6 +31,6 @@ export async function sendSMS(phoneNumber, message) {
   };
 
   return connectToSNS()
-      .publish(params)
-      .promise();
+    .publish(params)
+    .promise();
 }

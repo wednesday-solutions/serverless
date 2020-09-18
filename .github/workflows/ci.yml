@@ -1,0 +1,34 @@
+name: Serverless CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  checkout-install-lint-test-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [13.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup environment
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "13"
+      - name: install-lint-test-build
+        run: |
+          files_str=$(find . -name "serverless.yml" -not -path "**/node_modules/**")
+          IFS=', ' read -r -a array <<< "$files_str"
+          root_directory=$(pwd)
+          for i in "${array[@]}"
+          do
+             :
+             directory=$(echo "$i" | sed -e "s/serverless.yml//")
+             cd "$directory" && \
+             npm install && \
+             npm run lint:eslint --if-present && \
+             npm run test --if-present && \
+             npm run build && \
+             cd "$root_directory"  || exit
+          done
