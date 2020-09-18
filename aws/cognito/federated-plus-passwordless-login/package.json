@@ -1,0 +1,53 @@
+{
+  "name": "wednesday-aws-federated-plus-passwordless-login",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "format": "prettier-standard './**/**/*.js'",
+    "lint": "npm run lint:js",
+    "lint:eslint": "eslint --ignore-path ./../../../.gitignore .",
+    "lint:eslint:fix": "eslint --ignore-path ./../../../.gitignore --fix",
+    "lint:js": "npm run lint:eslint -- . ",
+    "lint:staged": "lint-staged",
+    "test": "jest --coverage",
+    "build": "sls package --stage=local",
+    "deploy-dev": "sls deploy --stage=dev"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^3.0.0",
+    "@babel/core": "^7.11.4",
+    "@babel/polyfill": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "aws-sdk-mock": "^5.1.0",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-config-prettier-standard": "^3.0.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^26.4.2",
+    "jest-environment-jsdom": "^26.3.0",
+    "lint-staged": "^9.4.2",
+    "mockdate": "^3.0.2",
+    "pre-commit": "1.2.2",
+    "prettier": "1.17.0",
+    "prettier-config-standard": "^1.0.1",
+    "serverless": "^2.0.0",
+    "serverless-dotenv-plugin": "^3.0.0",
+    "serverless-webpack": "^5.3.5",
+    "webpack": "^4.44.1",
+    "webpack-node-externals": "^2.5.2"
+  }
+}
