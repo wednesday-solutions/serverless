@@ -1,5 +1,4 @@
-import { isLocal, } from '@utils';
-import { CONSTANTS } from '@mocks/constants';
+import { isLocal } from '@utils';
 
 describe('utils/index', () => {
   describe('isLocal', () => {

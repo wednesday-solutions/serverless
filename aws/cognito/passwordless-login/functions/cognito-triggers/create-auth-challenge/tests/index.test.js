@@ -1,11 +1,11 @@
 import { handler } from '../index';
-import {failureSendSMS, successSendSMS} from '@mocks/services/sms.mock';
+import { failureSendSMS, successSendSMS } from '@mocks/services/sms.mock';
 import { CONSTANTS } from '@mocks/constants';
 import { connectToSNS } from '@services/sns';
 
 describe('cognito-triggers/create-auth-challenge', () => {
   let event;
-  let mocks
+  let mocks;
   beforeEach(() => {
     event = require('../data.json');
   });
@@ -26,10 +26,8 @@ describe('cognito-triggers/create-auth-challenge', () => {
     expect(eventResponse.response.challengeMetadata).toBe(`CODE-${CONSTANTS.code}`);
   });
   it('should send the OTP to the correct phone number', async () => {
-    const errorMessage = 'Failed to send SMS'
-    failureSendSMS(
-        errorMessage
-    );
+    const errorMessage = 'Failed to send SMS';
+    failureSendSMS(errorMessage);
     const sns = connectToSNS(true);
     mocks = {
       sns

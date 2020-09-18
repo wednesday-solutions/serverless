@@ -17,7 +17,7 @@ exports.handler = async event => {
         `Use the following OTP: ${code} to login to the Wednesday Application`
       );
     } catch {
-      throw new Error(`Failed to send SMS`)
+      throw new Error(`Failed to send SMS`);
     }
   } else {
     // re-use code generated in previous challenge

@@ -6,12 +6,12 @@
   "scripts": {
     "format": "prettier-standard './**/**/*.js'",
     "lint": "npm run lint:js",
-    "lint:eslint": "eslint --ignore-path ./../../.gitignore",
-    "lint:eslint:fix": "eslint --ignore-path ./../../.gitignore --fix",
+    "lint:eslint": "eslint --ignore-path ./../../../.gitignore .",
+    "lint:eslint:fix": "eslint --ignore-path ./../../../.gitignore --fix",
     "lint:js": "npm run lint:eslint -- . ",
     "lint:staged": "lint-staged",
     "test": "jest --coverage",
-    "build": "sls package --stage=dev",
+    "build": "sls package --stage=local",
     "deploy-dev": "sls deploy --stage=dev"
   },
   "author": "",

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "sls package --stage=dev",
+    "build": "sls package --stage=local",
     "deploy-dev": "sls deploy --stage=dev"
   },
   "author": "",
