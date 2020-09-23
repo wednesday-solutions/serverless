@@ -1,9 +1,10 @@
 <img align="left" src="https://github.com/wednesday-solutions/serverless/blob/master/serverless_github.svg" width="480" height="460" />
 
-<div>
+<div style="display:flex;">
   <a href="https://www.wednesday.is?utm_source=gthb&utm_medium=repo&utm_campaign=serverless" align="left"><img src="https://uploads-ssl.webflow.com/5ee36ce1473112550f1e1739/5f5879492fafecdb3e5b0e75_wednesday_logo.svg"></a>
-  <p><h1 align="left">Serverless</h1></p>
-
+  <p>
+    <h1 align="left">Serverless</h1>
+  </p>
   <p>
     A repository of Serverless applications showcasing how to orchestrate cloud infrastructure for varied use cases with multiple cloud infrastructure providers.
   </p>
