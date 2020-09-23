@@ -1,6 +1,6 @@
-<img align="left" src="https://github.com/wednesday-solutions/serverless/blob/master/serverless_github.svg" width="480" height="460" />
+<img align="left" src="https://github.com/wednesday-solutions/serverless/blob/master/serverless_github.svg" width="480" height="520" />
 
-<div style="display:flex;">
+<div>
   <a href="https://www.wednesday.is?utm_source=gthb&utm_medium=repo&utm_campaign=serverless" align="left"><img src="https://uploads-ssl.webflow.com/5ee36ce1473112550f1e1739/5f5879492fafecdb3e5b0e75_wednesday_logo.svg"></a>
   <p>
     <h1 align="left">Serverless</h1>
