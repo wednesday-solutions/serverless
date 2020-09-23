@@ -1,6 +1,13 @@
 module.exports = {
   collectCoverageFrom: [
     './**/*.js',
+    '!models/*.*',
+    '!utils/migrateUtils.js',
+    '!utils/testUtils.js',
+    '!runMigrations.js',
+    '!getHost.js',
+    '!setDBEnvironment.js',
+    '!migrations/**/*.js',
     '!babel.config.js',
     '!.eslintrc.js',
     '!jest.config.js',
@@ -19,7 +26,7 @@ module.exports = {
     }
   },
   moduleNameMapper: {
-    '@(utils|services)(.*)$': '<rootDir>/$1/$2',
+    '@(models|utils|services)(.*)$': '<rootDir>/$1/$2',
     '@mocks(.*)$': '<rootDir>/__mocks__/$1'
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js']

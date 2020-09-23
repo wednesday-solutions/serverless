@@ -10,7 +10,7 @@
     "lint:eslint:fix": "eslint --ignore-path ./../../../.gitignore --fix",
     "lint:js": "npm run lint:eslint -- . ",
     "lint:staged": "lint-staged",
-    "test": "jest --coverage",
+    "test": "NODE_ENV=test && jest --coverage",
     "build": "sls package --stage=local",
     "deploy-dev": "sls deploy --stage=dev"
   },
@@ -51,6 +51,7 @@
     "prettier": "1.17.0",
     "prettier-config-standard": "^1.0.1",
     "sequelize-mock": "^0.10.2",
+    "serverless": "^2.2.0",
     "serverless-dotenv-plugin": "^3.0.0",
     "serverless-offline": "^6.7.0",
     "serverless-plugin-scripts": "^1.0.2",
