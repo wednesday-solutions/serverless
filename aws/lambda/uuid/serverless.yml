@@ -1,0 +1,257 @@
+service:
+  name: ${env:NAME}
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-sequelize-migrations
+  - serverless-plugin-scripts
+  - serverless-offline
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  versionFunctions: false
+  environment: ${file(./setDBEnvironment.js)}
+
+functions:
+  get-uuid:
+    handler: functions/uuid/get/index.handler
+    role: LambdaRDSRole
+    environment: ${file(./setDBEnvironment.js)}
+    events:
+      - http: GET uuids
+  update-uuid:
+    handler: functions/uuid/put/index.handler
+    role: LambdaRDSRole
+    environment: ${file(./setDBEnvironment.js)}
+    events:
+      - http: PUT uuids
+custom:
+  scripts:
+    hooks:
+      'aws:deploy:finalize:cleanup': ${file(./runMigrations.js)}
+  name: ${self:service.name}
+  AURORA:
+    VPC_CIDR: 10
+    DB_NAME: uuids_${env:RDS_PREFIX}_${env:STAGE}
+resources:
+  Resources:
+# internet gateway
+    ServerlessInternetGateway:
+      Type: AWS::EC2::InternetGateway
+      Properties:
+        Tags:
+          - Key: 'Name'
+            Value: 'ServerlessInternetGateway'
+# route table
+    RouteTablePublic:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: ServerlessVPC
+        Tags:
+          - Key: Name
+            Value: public-route
+    RoutePublic:
+      Type: AWS::EC2::Route
+      Properties:
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: ServerlessInternetGateway
+        RouteTableId:
+          Ref: RouteTablePublic
+#route table associations
+    RouteTableAssociationSubnetA:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId:
+          Ref: RouteTablePublic
+        SubnetId:
+          Ref: ServerlessSubnetA
+    RouteTableAssociationSubnetB:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId:
+          Ref: RouteTablePublic
+        SubnetId:
+          Ref: ServerlessSubnetB
+    RouteTableAssociationSubnetC:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId:
+          Ref: RouteTablePublic
+        SubnetId:
+          Ref: ServerlessSubnetC
+# security group
+    ServerlessSecurityGroup:
+      DependsOn:
+        - ServerlessVPC
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: SecurityGroup for Serverless Functions
+        VpcId:
+          Ref: ServerlessVPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '0'
+            ToPort: '65535'
+            CidrIp: '0.0.0.0/0'
+        Tags:
+          - Key: 'Name'
+            Value: 'ServerlessSecurityGroup'
+# subnets
+    ServerlessSubnetGroup:
+      DependsOn:
+        - ServerlessSubnetA
+        - ServerlessSubnetB
+        - ServerlessSubnetC
+
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupDescription: 'RDS Subnet Group'
+        SubnetIds:
+          - Ref: ServerlessSubnetA
+          - Ref: ServerlessSubnetB
+          - Ref: ServerlessSubnetC
+        Tags:
+          - Key: 'Name'
+            Value: 'ServerlessSubnetGroup'
+    ServerlessSubnetA:
+      DependsOn:
+        - ServerlessVPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: ServerlessVPC
+        AvailabilityZone: ${self:provider.region}a
+        CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/24
+        Tags:
+          - Key: 'Name'
+            Value: 'ServerlessSubnetA'
+    ServerlessSubnetB:
+      DependsOn:
+        - ServerlessVPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: ServerlessVPC
+        AvailabilityZone: ${self:provider.region}b
+        CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.1.0/24
+        Tags:
+          - Key: 'Name'
+            Value: 'ServerlessSubnetB'
+    ServerlessSubnetC:
+      DependsOn:
+        - ServerlessVPC
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: ServerlessVPC
+        AvailabilityZone: ${self:provider.region}c
+        CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.2.0/24
+        Tags:
+          - Key: 'Name'
+            Value: 'ServerlessSubnetC'
+# vpc
+    ServerlessVPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: ${self:custom.AURORA.VPC_CIDR}.0.0.0/16
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        InstanceTenancy: default
+        Tags:
+          - Key: 'Name'
+            Value: 'ServerlessVPC'
+    ServerlessVPCGA:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId:
+          Ref: ServerlessVPC
+        InternetGatewayId:
+          Ref: ServerlessInternetGateway
+# rds
+    WednesdayRDSCluster:
+      Type: AWS::RDS::DBCluster
+      DependsOn:
+        - ServerlessSecurityGroup
+      Properties:
+        MasterUsername: ${env:RDS_USERNAME}_${env:STAGE}
+        MasterUserPassword: ${env:DB_PASSWORD}
+        DBSubnetGroupName:
+          Ref: ServerlessSubnetGroup
+        Engine: aurora
+        EngineVersion: '5.6'
+        DatabaseName: ${self:custom.AURORA.DB_NAME}
+        BackupRetentionPeriod: 3
+        DBClusterParameterGroupName:
+          Ref: WednesdayRDSClusterParameter
+        VpcSecurityGroupIds:
+          - !Ref 'ServerlessSecurityGroup'
+    WednesdayRDSClusterParameter:
+      Type: AWS::RDS::DBClusterParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: aurora5.6
+        Parameters:
+          character_set_database: 'utf32'
+    WednesdayRDSDBInstance:
+      DependsOn:
+        - ServerlessVPCGA
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceClass: db.t2.small
+        DBSubnetGroupName:
+          Ref: ServerlessSubnetGroup
+        Engine: aurora
+        EngineVersion: '5.6'
+        PubliclyAccessible: true
+        DBParameterGroupName:
+          Ref: WednesdayRDSDBParameterGroup
+        DBClusterIdentifier:
+          Ref: WednesdayRDSCluster
+    WednesdayRDSDBParameterGroup:
+      Type: AWS::RDS::DBParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: aurora5.6
+        Parameters:
+          sql_mode: IGNORE_SPACE
+          max_connections: 100
+          wait_timeout: 900
+          interactive_timeout: 900
+    RDSPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        Description: Managed policy to provide access to the RDS
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - rds:*
+              Resource: "arn:aws:rds:${env:REGION}:${env:ACCOUNT_ID}:table/*_${env:RDS_PREFIX}_${env:STAGE}"
+    LambdaRDSRole:
+      Type: AWS::IAM::Role
+      Description: "An IAM Role to allow Lambdas to access DDB"
+      Properties:
+        RoleName: ${self:service.name}-${self:provider.stage}-lambda-ddb-role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+  Outputs:
+    WednesdayRDSHost:
+      Description: Host of the wednesday RDS instance
+      Value:
+        Fn::GetAtt: [WednesdayRDSCluster, Endpoint.Address]
+    WednesdayRDSPort:
+      Description: Port of the wednesday RDS instance
+      Value:
+        Fn::GetAtt: [WednesdayRDSCluster, Endpoint.Port]
