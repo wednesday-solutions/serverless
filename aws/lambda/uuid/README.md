@@ -1,6 +1,6 @@
 # UUID
 
-Use API Gateway to expose lambdas that 
+Use API Gateway to expose a backend that provides
 - a GET request that returns a new UUID when invoked and writes the value to a mysql variant of Aurora DB
 - a PUT request that accepts a UUID, updates the updated_at timestamp if its already present in the db, else inserts it.
 
