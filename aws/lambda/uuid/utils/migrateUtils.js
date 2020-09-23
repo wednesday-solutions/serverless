@@ -12,7 +12,7 @@ function getVersion(currentFileName) {
 }
 
 async function migrate(currentFileName, queryInterface) {
-  const migrationResourceDir = './migrations/resources/v'
+  const migrationResourceDir = './migrations/resources/v';
   const version = getVersion(currentFileName.split('/')[currentFileName.split('/').length - 1]);
   const directories = shell.ls(`${migrationResourceDir}${version}`);
   for (let index = 0; index < directories.length; index++) {
