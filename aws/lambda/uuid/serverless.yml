@@ -12,19 +12,23 @@ provider:
   stage: ${env:STAGE}
   region: ${env:REGION}
   versionFunctions: false
-  environment: ${file(./setDBEnvironment.js)}
+  environment:
+    DB_DIALECT: ${file(./setDBEnvironment.js):env.DB_DIALECT}
+    DB_NAME: ${file(./setDBEnvironment.js):env.DB_NAME}
+    DB_HOST: ${file(./getHost.js)}
+    DB_USERNAME: ${file(./setDBEnvironment.js):env.DB_USERNAME}
+    DB_PASSWORD: ${file(./setDBEnvironment.js):env.DB_PASSWORD}
+    DB_PORT: ${file(./setDBEnvironment.js):env.DB_PORT}
 
 functions:
   get-uuid:
     handler: functions/uuid/get/index.handler
     role: LambdaRDSRole
-    environment: ${file(./setDBEnvironment.js)}
     events:
       - http: GET uuids
   update-uuid:
     handler: functions/uuid/put/index.handler
     role: LambdaRDSRole
-    environment: ${file(./setDBEnvironment.js)}
     events:
       - http: PUT uuids
 custom:
