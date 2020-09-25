@@ -1,10 +1,7 @@
-const fs = require('fs');
-const path = require('path');
 const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
-const db = {};
 const SequelizeMock = require('sequelize-mock');
 
+const db = {};
 function getDB() {
   let sequelize;
   if (process.env.NODE_ENV === 'test') {
@@ -30,18 +27,9 @@ function getDB() {
       }
     );
   }
+  const uuids = require('@models/uuids');
 
-  const dirName = path.join(process.cwd(), './models');
-  fs.readdirSync(dirName)
-    .filter(file => file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js')
-    .forEach(file => {
-      try {
-        const model = sequelize.import(path.join(`${process.cwd()}/models/`, file));
-        db[model.name] = model;
-      } catch (e) {
-        console.log({ e });
-      }
-    });
+  db.uuids = uuids(sequelize, Sequelize.DataTypes);
 
   Object.keys(db).forEach(modelName => {
     if (db[modelName].associate) {
