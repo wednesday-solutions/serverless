@@ -1,0 +1,72 @@
+Resources:
+  SnsPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed policy to provide access to SNS
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowSNSPublishing
+            Effect: Allow
+            Action:
+              - sns:publish
+            Resource: "*"
+  SnsRole:
+    Type: AWS::IAM::Role
+    Description: "An IAM Role to allow Cognito to access SNS"
+    DependsOn:
+      - SnsPolicy
+    Properties:
+      RoleName: ${self:service.name}-${self:provider.stage}-sns-role
+      ManagedPolicyArns:
+        - Ref: SnsPolicy
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - cognito-idp.amazonaws.com
+  LambdaSnsRole:
+    Type: AWS::IAM::Role
+    Description: "An IAM Role to allow Lambdas to access SNS"
+    DependsOn:
+      - LambdaPolicy
+      - SnsPolicy
+    Properties:
+      RoleName: ${self:service.name}-${self:provider.stage}-lambda-sns-role
+      ManagedPolicyArns:
+        - Ref: SnsPolicy
+        - Ref: LambdaPolicy
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+  LambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - SnsPolicy
+    Properties:
+      Description: Managed policy to provide access to SNS
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource:
+              - "Fn::Join":
+                  - ":"
+                  - - "arn:aws:logs"
+                    - Ref: "AWS::Region"
+                    - Ref: "AWS::AccountId"
+                    - "log-group:/aws/lambda/*:*:*"
