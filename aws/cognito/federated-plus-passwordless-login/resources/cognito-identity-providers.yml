@@ -1,0 +1,44 @@
+Resources:
+  CognitoUserPoolIdentityProviderGoogle:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      ProviderName: Google
+      AttributeMapping:
+        name: name
+        email: email
+        phone_number: phoneNumbers
+      ProviderDetails:
+        client_id: ${env:GOOGLE_CLIENT_ID}
+        client_secret: ${env:GOOGLE_SECRET_KEY}
+        authorize_scopes: openid email phone profile
+      ProviderType: Google
+      UserPoolId:
+        Ref: CognitoUserPool
+  CognitoUserPoolIdentityProviderFacebook:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      ProviderName: Facebook
+      AttributeMapping:
+        name: name
+        email: email
+      ProviderDetails:
+        client_id: ${env:FACEBOOK_CLIENT_ID}
+        client_secret: ${env:FACEBOOK_SECRET_KEY}
+        authorize_scopes: public_profile,email
+      ProviderType: Facebook
+      UserPoolId:
+        Ref: CognitoUserPool
+  CognitoUserPoolIdentityProviderAmazon:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      ProviderName: LoginWithAmazon
+      AttributeMapping:
+        email: email
+        name: name
+      ProviderDetails:
+        client_id: ${env:AMAZON_CLIENT_ID}
+        client_secret: ${env:AMAZON_SECRET_KEY}
+        authorize_scopes: profile postal_code
+      ProviderType: LoginWithAmazon
+      UserPoolId:
+        Ref: CognitoUserPool
