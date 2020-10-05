@@ -1,0 +1,47 @@
+Resources:
+  WednesdayERP:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: employeeId
+          AttributeType: S
+        - AttributeName: officeId
+          AttributeType: S
+        - AttributeName: COUNTRY_STATE_CITY
+          AttributeType: S
+      TableName: 'WednesdayERP-${self:service.name}-${self:provider.stage}'
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: officeId
+          KeySchema:
+            - AttributeName: officeId
+              KeyType: HASH
+          Projection:
+            NonKeyAttributes:
+              - EMPLOYEES
+            ProjectionType: INCLUDE
+        - IndexName: employeeId
+          KeySchema:
+            - AttributeName: employeeId
+              KeyType: HASH
+          Projection:
+            NonKeyAttributes:
+              - OFFICES
+            ProjectionType: INCLUDE
+        - IndexName: Address
+          KeySchema:
+            - AttributeName: COUNTRY_STATE_CITY
+              KeyType: HASH
+          Projection:
+            NonKeyAttributes:
+              - officeId
+            ProjectionType: INCLUDE

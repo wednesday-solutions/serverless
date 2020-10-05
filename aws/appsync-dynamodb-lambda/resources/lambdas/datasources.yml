@@ -1,0 +1,13 @@
+# get all employees
+- type: AWS_LAMBDA
+  name: Lambda_getEmployees
+  description: 'Get employees based on filters from the database'
+  config:
+    functionName: getEmployees
+
+# get all offices
+- type: AWS_LAMBDA
+  name: Lambda_getOffices
+  description: 'Get offices based on filters from the database'
+  config:
+    functionName: getOffices

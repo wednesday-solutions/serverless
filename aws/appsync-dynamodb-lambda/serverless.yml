@@ -1,0 +1,75 @@
+service:
+  name: ${env:NAME}
+plugins:
+  - serverless-dynamodb-local
+  - serverless-appsync-simulator
+  - serverless-appsync-offline
+  - serverless-offline
+  - serverless-appsync-plugin
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-appsync-cloudfront
+
+provider:
+  name: aws
+  timeout: 90
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  versionFunctions: false
+
+resources:
+  - ${file(./resources/roles.yml)}
+  - ${file(./resources/dynamodb/resources.yml)}
+
+functions: ${file(./resources/lambdas/functions.yml)}
+package:
+  individually: true
+custom:
+  dynamodb:
+    stages:
+      - develop
+  webpack:
+    includeModules: true
+    excludeFiles: ./**/*.test.js
+  appsync-offline:
+    port: 62222
+    dynamodb:
+      migrate: true
+      create: true
+      client:
+        endpoint: 'http://localhost:8000'
+        region: 'localhost'
+      server:
+        port: 8000
+      stages:
+        - develop
+  appsync-emulator:
+    buildPrefix: .webpack/service
+  appSync:
+    logConfig:
+      level: ALL
+      excludeVerboseContent: false
+    name: ${self:service.name}
+    serviceRole: AuthenticatedAppSyncServiceRole
+    authenticationType: API_KEY
+    mappingTemplatesLocation: resolvers/
+    mappingTemplates:
+      - ${file(./resources/mapping-templates/queries.yml)}
+    dataSources:
+      - ${file(./resources/dynamodb/datasources.yml)}
+      - ${file(./resources/lambdas/datasources.yml)}
+  appSyncCloudFront:
+    domainName: api-${env:STAGE}.${env:DOMAIN}
+    stage: ${env:STAGE}
+    certificate: arn:aws:acm:${env:REGION}:${env:ACCOUNT_ID}:certificate/${env:ACM_ARN}
+    querystring: all
+    priceClass: PriceClass_100
+    minimumProtocolVersion: TLSv1.2_2019
+  customDomain:
+    domainName: webhook-${env:STAGE}.${env:DOMAIN}
+    certificateArn: arn:aws:acm:${env:REGION}:${env:ACCOUNT_ID}:certificate/${env:ACM_ARN}
+    securityPolicy: tls_1_2
+    stage: ${opt:stage}
+    createRoute53Record: true
+    autoDomain: true

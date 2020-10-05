@@ -1,0 +1,8 @@
+# cognito triggers
+getEmployees:
+  handler: functions/get-employees/index.handler
+  role: LambdaDDBRole
+
+getOffices:
+  handler: functions/get-offices/index.handler
+  role: LambdaDDBRole

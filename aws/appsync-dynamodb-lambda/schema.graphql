@@ -1,0 +1,37 @@
+input PaginatedInput {
+    limit: Int
+    nextToken: String
+}
+type Pagination {
+    nextToken: String
+}
+type Employee {
+    employeeId: String
+    name: String
+    offices: [Office]
+}
+
+type Office {
+    officeId: String
+    employees: [Employee]
+    address: String
+    location: String
+}
+type GetEmployeesResponse {
+    items: [Employee]
+    pagination: Pagination
+}
+
+type GetOfficesResponse {
+    items: [Office]
+    pagination: Pagination
+}
+
+type Query {
+    getEmployees(employeeId: String, pagination: PaginatedInput): GetEmployeesResponse
+    getOffices(officeId: String, pagination: PaginatedInput): GetOfficesResponse
+}
+
+schema {
+    query: Query
+}
