@@ -6,10 +6,8 @@ exports.handler = async (event, context, callback) => {
   const args = event.arguments;
   try {
     const employeeResponse = await getEmployee(args.employeeId);
-    console.log({ employeeResponse });
     await Promise.all(
       employeeResponse.Items.map(async employee => {
-        console.log({ employee });
         let officeRes = await getAllOffices({
           limit: get(args, 'nestedPagination.limit'),
           nextToken: get(args, 'nestedPagination.nextToken'),

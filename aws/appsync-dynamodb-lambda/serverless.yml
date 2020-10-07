@@ -67,10 +67,3 @@ custom:
     querystring: all
     priceClass: PriceClass_100
     minimumProtocolVersion: TLSv1.2_2019
-  customDomain:
-    domainName: webhook-${env:STAGE}.${env:DOMAIN}
-    certificateArn: arn:aws:acm:${env:REGION}:${env:ACCOUNT_ID}:certificate/${env:ACM_ARN}
-    securityPolicy: tls_1_2
-    stage: ${opt:stage}
-    createRoute53Record: true
-    autoDomain: true

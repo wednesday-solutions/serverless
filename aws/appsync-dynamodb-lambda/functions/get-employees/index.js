@@ -10,17 +10,14 @@ exports.handler = async (event, context, callback) => {
       nextToken: args.pagination.nextToken
     });
 
-    console.log({ allEmployeesRes });
 
     allEmployeesRes.items = await Promise.all(
       allEmployeesRes.Items.map(async employee => {
-        // console.log({employee})
         let officeRes = await getAllOffices({
           limit: get(args, 'pagination.nested.limit'),
           nextToken: get(args, 'pagination.nested.nextToken'),
           employeeId: employee.employeeId
         });
-        // console.log({officeRes})
         officeRes = addPagination(officeRes);
         officeRes.items = officeRes.Items;
         employee.offices = officeRes;
