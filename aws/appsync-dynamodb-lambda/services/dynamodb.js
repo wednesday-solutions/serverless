@@ -46,25 +46,7 @@ export const getParamsForGet = ({ key, tableName, indexName }) => ({
 });
 
 export const getParamsForQuery = ({
-  keyExpression,
-  indexName,
-  attributeNames,
-  attributeValues,
-  tableName,
-  scanIndexForward,
-  consistentRead
-}) => ({
-  ScanIndexForward: scanIndexForward || false,
-  ConsistentRead: consistentRead || false,
-  TableName: tableName,
-  IndexName: indexName || null,
-  KeyConditionExpression: keyExpression,
-  ExpressionAttributeNames: attributeNames,
-  ExpressionAttributeValues: attributeValues,
-  Limit: 2
-});
-
-export const getParamsForScan = ({
+  key,
   keyExpression,
   indexName,
   attributeNames,
@@ -83,7 +65,32 @@ export const getParamsForScan = ({
   ExpressionAttributeNames: attributeNames,
   ExpressionAttributeValues: attributeValues,
   Limit: limit,
-  ExclusiveStartKey: exclusiveStartKey
+  ExclusiveStartKey: exclusiveStartKey,
+  KeyConditions: key
+});
+
+export const getParamsForScan = ({
+  keyExpression,
+  indexName,
+  filterExpression,
+  attributeNames,
+  attributeValues,
+  tableName,
+  scanIndexForward,
+  consistentRead,
+  limit,
+  exclusiveStartKey
+}) => ({
+  ScanIndexForward: scanIndexForward || false,
+  ConsistentRead: consistentRead || false,
+  TableName: tableName,
+  IndexName: indexName || null,
+  KeyConditionExpression: keyExpression,
+  ExpressionAttributeNames: attributeNames,
+  ExpressionAttributeValues: attributeValues,
+  Limit: limit,
+  ExclusiveStartKey: exclusiveStartKey,
+  FilterExpression: filterExpression
 });
 
 export const getWsErpTable = () => `WednesdayERP-${process.env.NAME}-${process.env.STAGE}`;

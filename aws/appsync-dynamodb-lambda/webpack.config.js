@@ -28,6 +28,7 @@ module.exports = {
     modules: ['node_modules', './'],
     alias: {
       '@utils': path.resolve(__dirname, 'utils/'),
+      '@daos': path.resolve(__dirname, 'daos/'),
       '@services': path.resolve(__dirname, 'services/')
     },
     extensions: ['.js', '.jsx', '.react.js'],

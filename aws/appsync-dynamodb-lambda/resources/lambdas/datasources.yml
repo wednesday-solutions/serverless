@@ -1,3 +1,17 @@
+# get employee
+- type: AWS_LAMBDA
+  name: Lambda_getEmployee
+  description: 'Get employee'
+  config:
+    functionName: getEmployee
+
+# get office
+- type: AWS_LAMBDA
+  name: Lambda_getOffice
+  description: 'Get office'
+  config:
+    functionName: getOffice
+
 # get all employees
 - type: AWS_LAMBDA
   name: Lambda_getEmployees
@@ -11,3 +25,24 @@
   description: 'Get offices based on filters from the database'
   config:
     functionName: getOffices
+
+# put office
+- type: AWS_LAMBDA
+  name: Lambda_putOffice
+  description: 'Put office in database'
+  config:
+    functionName: putOffice
+
+# put employee
+- type: AWS_LAMBDA
+  name: Lambda_putEmployee
+  description: 'Put employee in database'
+  config:
+    functionName: putEmployee
+
+# joinEmployeeAndOffice
+- type: AWS_LAMBDA
+  name: Lambda_joinEmployeeAndOffice
+  description: 'Add an employee to an office'
+  config:
+    functionName: joinEmployeeAndOffice

@@ -1,21 +1,29 @@
 input PaginatedInput {
     limit: Int
     nextToken: String
+    nested: PaginatedInput
 }
+
+input NestedPaginationInput {
+    limit: Int
+    nextToken: String
+}
+
 type Pagination {
     nextToken: String
 }
 type Employee {
     employeeId: String
-    name: String
-    offices: [Office]
+    employeeName: String
+    offices: GetOfficesResponse
 }
 
 type Office {
     officeId: String
-    employees: [Employee]
+    employees: GetEmployeesResponse
     address: String
-    location: String
+    countryStateCity: String
+    officeName: String
 }
 type GetEmployeesResponse {
     items: [Employee]
@@ -27,11 +35,24 @@ type GetOfficesResponse {
     pagination: Pagination
 }
 
-type Query {
-    getEmployees(employeeId: String, pagination: PaginatedInput): GetEmployeesResponse
-    getOffices(officeId: String, pagination: PaginatedInput): GetOfficesResponse
+type OfficeEmployee {
+    office: Office
+    employee: Employee
 }
 
+type Query {
+    getEmployee(nestedPagination: NestedPaginationInput, employeeId: String!): Employee
+    getEmployees(pagination: PaginatedInput!): GetEmployeesResponse
+    getOffice(nestedPagination: NestedPaginationInput, officeId: String!): Office
+    getOffices(pagination: PaginatedInput!): GetOfficesResponse
+}
+
+type Mutation {
+    putOffice(officeId: String, officeName: String, address: String, countryStateCity: String): Office
+    putEmployee(employeeId: String, employeeName: String): Employee
+    joinEmployeeAndOffice(officeId: String!, employeeId: String!): OfficeEmployee
+}
 schema {
     query: Query
+    mutation: Mutation
 }

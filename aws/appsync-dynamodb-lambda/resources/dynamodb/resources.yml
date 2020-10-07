@@ -16,7 +16,7 @@ Resources:
           AttributeType: S
         - AttributeName: officeId
           AttributeType: S
-        - AttributeName: COUNTRY_STATE_CITY
+        - AttributeName: countryStateCity
           AttributeType: S
       TableName: 'WednesdayERP-${self:service.name}-${self:provider.stage}'
       BillingMode: PAY_PER_REQUEST
@@ -27,7 +27,9 @@ Resources:
               KeyType: HASH
           Projection:
             NonKeyAttributes:
-              - EMPLOYEES
+              - officeName
+              - address
+              - countryStateCity
             ProjectionType: INCLUDE
         - IndexName: employeeId
           KeySchema:
@@ -35,13 +37,15 @@ Resources:
               KeyType: HASH
           Projection:
             NonKeyAttributes:
-              - OFFICES
+              - employeeName
             ProjectionType: INCLUDE
-        - IndexName: Address
+        - IndexName: address
           KeySchema:
-            - AttributeName: COUNTRY_STATE_CITY
+            - AttributeName: countryStateCity
               KeyType: HASH
           Projection:
             NonKeyAttributes:
               - officeId
+              - officeName
+              - address
             ProjectionType: INCLUDE

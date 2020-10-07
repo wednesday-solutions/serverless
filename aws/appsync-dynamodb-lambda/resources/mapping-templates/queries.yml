@@ -1,3 +1,10 @@
+# get employee
+- dataSource: Lambda_getEmployee
+  type: Query
+  field: getEmployee
+  request: 'InvokeGetEmployee.req.vtl'
+  response: 'InvokeGetEmployee.res.vtl'
+
 # get employees
 - dataSource: Lambda_getEmployees
   type: Query
@@ -11,3 +18,9 @@
   field: getOffices
   request: 'InvokeGetOffices.req.vtl'
   response: 'InvokeGetOffices.res.vtl'
+
+- dataSource: Lambda_getOffice
+  type: Query
+  field: getOffice
+  request: 'InvokeGetOffice.req.vtl'
+  response: 'InvokeGetOffice.res.vtl'
