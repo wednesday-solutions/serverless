@@ -1,4 +1,4 @@
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 import {
   connectToDynamoDB,
   getParamsForQuery,
@@ -6,7 +6,7 @@ import {
   getParamsForUpdate,
   getWsErpTable
 } from '@services/dynamodb';
-import {base64Decode} from '@utils';
+import { base64Decode } from '@utils';
 
 export const GSI = {
   EMPLOYEE_ID: 'employeeId',
@@ -22,15 +22,15 @@ export const getEmployee = async employeeId => {
     tableName: getWsErpTable(),
     keyExpression: `#PK = :PK`,
     attributeNames: {
-      "#PK": "PK"
+      '#PK': 'PK'
     },
     attributeValues: {
-      ":PK": `${GSI.EMPLOYEE_ID}#${employeeId}`
+      ':PK': `${GSI.EMPLOYEE_ID}#${employeeId}`
     }
   };
   return await connectToDynamoDB()
-      .query(getParamsForQuery(queryParams))
-      .promise();
+    .query(getParamsForQuery(queryParams))
+    .promise();
 };
 
 export const getOffice = async officeId => {
@@ -41,23 +41,22 @@ export const getOffice = async officeId => {
     tableName: getWsErpTable(),
     keyExpression: `#PK = :PK`,
     attributeNames: {
-      "#PK": "PK"
+      '#PK': 'PK'
     },
     attributeValues: {
-      ":PK": `${GSI.OFFICE_ID}#${officeId}`
+      ':PK': `${GSI.OFFICE_ID}#${officeId}`
     }
   };
   return await connectToDynamoDB()
-      .query(getParamsForQuery(queryParams))
-      .promise();
+    .query(getParamsForQuery(queryParams))
+    .promise();
 };
 
-export const getAllEmployees = async ({limit, nextToken, officeId}) => {
+export const getAllEmployees = async ({ limit, nextToken, officeId }) => {
   if (nextToken) {
     try {
       nextToken = base64Decode(nextToken);
-    } catch {
-    }
+    } catch {}
   }
   const scanParams = {
     tableName: getWsErpTable(),
@@ -80,16 +79,15 @@ export const getAllEmployees = async ({limit, nextToken, officeId}) => {
   }
 
   return await connectToDynamoDB()
-      .scan(getParamsForScan(scanParams))
-      .promise();
+    .scan(getParamsForScan(scanParams))
+    .promise();
 };
 
-export const getAllOffices = async ({nextToken, limit, employeeId}) => {
+export const getAllOffices = async ({ nextToken, limit, employeeId }) => {
   if (nextToken) {
     try {
       nextToken = base64Decode(nextToken);
-    } catch {
-    }
+    } catch {}
   }
   const scanParams = {
     tableName: getWsErpTable(),
@@ -100,7 +98,7 @@ export const getAllOffices = async ({nextToken, limit, employeeId}) => {
       '#PK': 'PK'
     },
     attributeValues: {
-      ":PK": `${GSI.OFFICE_ID}#`
+      ':PK': `${GSI.OFFICE_ID}#`
     },
     filterExpression: 'begins_with(#PK,:PK)'
   };
@@ -112,20 +110,20 @@ export const getAllOffices = async ({nextToken, limit, employeeId}) => {
   }
 
   return await connectToDynamoDB()
-      .scan(getParamsForScan(scanParams))
-      .promise();
+    .scan(getParamsForScan(scanParams))
+    .promise();
 };
 
 // update entities
 export const updateRecord = async ({
-                                     employeeEntry,
-                                     employeeName,
-                                     address,
-                                     countryStateCity,
-                                     employeeId,
-                                     officeName,
-                                     officeId
-                                   }) => {
+  employeeEntry,
+  employeeName,
+  address,
+  countryStateCity,
+  employeeId,
+  officeName,
+  officeId
+}) => {
   const putParams = {
     attributeNames: {
       '#employeeName': 'employeeName',
@@ -149,15 +147,15 @@ export const updateRecord = async ({
     },
     tableName: getWsErpTable(),
     updateExpression:
-        'SET #employeeName = :employeeName, #address = :address, #countryStateCity = :countryStateCity, #officeName = :officeName, #employeeId = :employeeId, #officeId = :officeId'
+      'SET #employeeName = :employeeName, #address = :address, #countryStateCity = :countryStateCity, #officeName = :officeName, #employeeId = :employeeId, #officeId = :officeId'
   };
 
   return connectToDynamoDB()
-      .update(getParamsForUpdate(putParams))
-      .promise();
+    .update(getParamsForUpdate(putParams))
+    .promise();
 };
 
-export const updateOffice = async ({officeName, address, countryStateCity, officeId, employeeId}) => {
+export const updateOffice = async ({ officeName, address, countryStateCity, officeId, employeeId }) => {
   officeId = officeId || uuid();
   const putParams = {
     attributeNames: {
@@ -178,14 +176,14 @@ export const updateOffice = async ({officeName, address, countryStateCity, offic
     },
     tableName: getWsErpTable(),
     updateExpression:
-        'SET #officeName = :officeName, #address = :address, #countryStateCity = :countryStateCity, #officeId = :officeId'
+      'SET #officeName = :officeName, #address = :address, #countryStateCity = :countryStateCity, #officeId = :officeId'
   };
   return connectToDynamoDB()
-      .update(getParamsForUpdate(putParams))
-      .promise();
+    .update(getParamsForUpdate(putParams))
+    .promise();
 };
 
-export const updateEmployee = async ({employeeId, employeeName, officeId}) => {
+export const updateEmployee = async ({ employeeId, employeeName, officeId }) => {
   employeeId = employeeId || uuid();
   const putParams = {
     attributeNames: {
@@ -204,6 +202,6 @@ export const updateEmployee = async ({employeeId, employeeName, officeId}) => {
     updateExpression: 'SET #employeeName = :employeeName, #employeeId = :employeeId'
   };
   return connectToDynamoDB()
-      .update(getParamsForUpdate(putParams))
-      .promise();
+    .update(getParamsForUpdate(putParams))
+    .promise();
 };

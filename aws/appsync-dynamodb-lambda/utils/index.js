@@ -49,5 +49,3 @@ export const addPagination = dbResponse => {
   }
   return dbResponse;
 };
-
-export const stripPrefixFromPK = obj => ({ [obj.PK.split('#')[0]]: obj.PK.split('#')[1] });
