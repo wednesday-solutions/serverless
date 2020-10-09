@@ -51,3 +51,8 @@ export const addPagination = dbResponse => {
 };
 
 export const getSystemId = event => ({ systemId: event.headers['x-ws-system-id'] });
+
+export const logHandler = (event, callback) => {
+  console.log({ event });
+  return callback(event);
+};

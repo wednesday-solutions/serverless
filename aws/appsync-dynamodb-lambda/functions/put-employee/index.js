@@ -1,13 +1,13 @@
-import { updateEmployee } from '../../daos/WednesdayERP';
-import { failure, getSystemId, success } from '@utils/index';
+import { updateEmployee } from '@daos/WednesdayERP';
+import { failure, getSystemId, logHandler, success } from '@utils/index';
 
-exports.handler = async (event, context, callback) => {
-  try {
-    console.log({ event });
-    const args = event.arguments;
-    const res = await updateEmployee({ ...getSystemId(event), ...args });
-    return success(callback, res.Attributes);
-  } catch (err) {
-    return failure(callback, err);
-  }
-};
+exports.handler = async (event, context, callback) =>
+  logHandler(event, async () => {
+    try {
+      const args = event.arguments;
+      const res = await updateEmployee({ ...getSystemId(event), ...args });
+      return success(callback, res.Attributes);
+    } catch (err) {
+      return failure(callback, err);
+    }
+  });
