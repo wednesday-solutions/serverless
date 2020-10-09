@@ -1,10 +1,10 @@
 import { updateOffice } from '@daos/WednesdayERP';
-import { failure, success } from '@utils/index';
+import { failure, getSystemId, success } from '@utils/index';
 
 exports.handler = async (event, context, callback) => {
   try {
     const args = event.arguments;
-    const res = await updateOffice(args);
+    const res = await updateOffice({ ...getSystemId(event), ...args });
     return success(
       callback,
 

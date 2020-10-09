@@ -12,40 +12,5 @@ Resources:
           AttributeType: S
         - AttributeName: SK
           AttributeType: S
-        - AttributeName: employeeId
-          AttributeType: S
-        - AttributeName: officeId
-          AttributeType: S
-        - AttributeName: countryStateCity
-          AttributeType: S
-      TableName: 'WednesdayERP-${self:service.name}-${self:provider.stage}'
+      TableName: 'MultiTenantERP-${self:service.name}-${self:provider.stage}'
       BillingMode: PAY_PER_REQUEST
-      GlobalSecondaryIndexes:
-        - IndexName: officeId
-          KeySchema:
-            - AttributeName: officeId
-              KeyType: HASH
-          Projection:
-            NonKeyAttributes:
-              - officeName
-              - address
-              - countryStateCity
-            ProjectionType: INCLUDE
-        - IndexName: employeeId
-          KeySchema:
-            - AttributeName: employeeId
-              KeyType: HASH
-          Projection:
-            NonKeyAttributes:
-              - employeeName
-            ProjectionType: INCLUDE
-        - IndexName: address
-          KeySchema:
-            - AttributeName: countryStateCity
-              KeyType: HASH
-          Projection:
-            NonKeyAttributes:
-              - officeId
-              - officeName
-              - address
-            ProjectionType: INCLUDE

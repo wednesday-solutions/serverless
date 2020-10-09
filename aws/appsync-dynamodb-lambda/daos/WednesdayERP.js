@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import {
   connectToDynamoDB,
+  getErpTable,
+  getParamsForGet,
   getParamsForQuery,
-  getParamsForScan,
-  getParamsForUpdate,
-  getWsErpTable
+  getParamsForUpdate
 } from '@services/dynamodb';
 import { base64Decode } from '@utils';
 
@@ -14,108 +14,116 @@ export const GSI = {
   Address: 'address'
 };
 
-export const getEmployee = async employeeId => {
+export const getEmployee = async ({ systemId, employeeId }) => {
   if (!employeeId) {
     throw new Error(`values for employeeId: ${employeeId} is required`);
   }
-  const queryParams = {
-    tableName: getWsErpTable(),
-    keyExpression: `#PK = :PK`,
-    attributeNames: {
-      '#PK': 'PK'
-    },
-    attributeValues: {
-      ':PK': `${GSI.EMPLOYEE_ID}#${employeeId}`
+  const getParams = {
+    tableName: getErpTable(),
+    key: {
+      PK: systemId,
+      SK: `${GSI.EMPLOYEE_ID}#${employeeId}`
     }
   };
-  return await connectToDynamoDB()
-    .query(getParamsForQuery(queryParams))
+
+  const res = await connectToDynamoDB()
+    .get(getParamsForGet(getParams))
     .promise();
+  if (!res?.Item) {
+    throw new Error(`No employee with id: ${employeeId}`);
+  }
+  return res.Item;
 };
 
-export const getOffice = async officeId => {
+export const getOffice = async ({ systemId, officeId }) => {
   if (!officeId) {
     throw new Error(`values for officeId: ${officeId} is required`);
   }
   const queryParams = {
-    tableName: getWsErpTable(),
-    keyExpression: `#PK = :PK`,
-    attributeNames: {
-      '#PK': 'PK'
-    },
-    attributeValues: {
-      ':PK': `${GSI.OFFICE_ID}#${officeId}`
+    tableName: getErpTable(),
+    key: {
+      PK: systemId,
+      SK: `${GSI.OFFICE_ID}#${officeId}`
     }
   };
+
+  const res = await connectToDynamoDB()
+    .get(getParamsForGet(queryParams))
+    .promise();
+
+  if (!res?.Item) {
+    throw new Error(`No office with id: ${officeId}`);
+  }
+  return res.Item;
+};
+
+export const getAllEmployees = async ({ systemId, limit, nextToken, officeId }) => {
+  if (nextToken) {
+    try {
+      nextToken = base64Decode(nextToken);
+    } catch {}
+  }
+  const queryParams = {
+    tableName: getErpTable(),
+    exclusiveStartKey: nextToken,
+    limit,
+    keyExpression: '#PK = :PK and begins_with(#SK, :SK)',
+    attributeValues: {
+      ':PK': systemId,
+      ':SK': `${GSI.EMPLOYEE_ID}#`
+    },
+    attributeNames: {
+      '#PK': 'PK',
+      '#SK': 'SK'
+    }
+  };
+
+  if (officeId) {
+    queryParams.filterExpression = `#officeId = :officeId`;
+    queryParams.attributeNames['#officeId'] = `officeId`;
+    queryParams.attributeValues[`:officeId`] = officeId;
+  }
+
   return await connectToDynamoDB()
     .query(getParamsForQuery(queryParams))
     .promise();
 };
 
-export const getAllEmployees = async ({ limit, nextToken, officeId }) => {
+export const getAllOffices = async ({ systemId, nextToken, limit, employeeId }) => {
   if (nextToken) {
     try {
       nextToken = base64Decode(nextToken);
     } catch {}
   }
-  const scanParams = {
-    tableName: getWsErpTable(),
-    indexName: GSI.EMPLOYEE_ID,
+  const queryParams = {
+    tableName: getErpTable(),
     exclusiveStartKey: nextToken,
     limit,
-    attributeNames: {
-      '#PK': 'PK'
-    },
+    keyExpression: '#PK = :PK and begins_with(#SK, :SK)',
     attributeValues: {
-      [`:PK`]: `${GSI.EMPLOYEE_ID}#`
+      ':PK': systemId,
+      ':SK': `${GSI.OFFICE_ID}#`
     },
-    filterExpression: 'begins_with(#PK,:PK)'
-  };
-
-  if (officeId) {
-    scanParams.filterExpression += ` and #SK = :SK`;
-    scanParams.attributeNames['#SK'] = `SK`;
-    scanParams.attributeValues[`:SK`] = `${GSI.OFFICE_ID}#${officeId}`;
-  }
-
-  return await connectToDynamoDB()
-    .scan(getParamsForScan(scanParams))
-    .promise();
-};
-
-export const getAllOffices = async ({ nextToken, limit, employeeId }) => {
-  if (nextToken) {
-    try {
-      nextToken = base64Decode(nextToken);
-    } catch {}
-  }
-  const scanParams = {
-    tableName: getWsErpTable(),
-    indexName: GSI.OFFICE_ID,
-    exclusiveStartKey: nextToken,
-    limit,
     attributeNames: {
-      '#PK': 'PK'
-    },
-    attributeValues: {
-      ':PK': `${GSI.OFFICE_ID}#`
-    },
-    filterExpression: 'begins_with(#PK,:PK)'
+      '#PK': 'PK',
+      '#SK': 'SK'
+    }
   };
 
   if (employeeId) {
-    scanParams.filterExpression += ` and #SK = :SK`;
-    scanParams.attributeNames['#SK'] = `SK`;
-    scanParams.attributeValues[`:SK`] = `${GSI.EMPLOYEE_ID}#${employeeId}`;
+    queryParams.filterExpression = ` #employeeId = :employeeId`;
+    queryParams.attributeNames['#employeeId'] = `employeeId`;
+    queryParams.attributeValues[`:employeeId`] = employeeId;
   }
 
   return await connectToDynamoDB()
-    .scan(getParamsForScan(scanParams))
+    .query(getParamsForQuery(queryParams))
     .promise();
 };
 
 // update entities
 export const updateRecord = async ({
+  systemId,
   employeeEntry,
   employeeName,
   address,
@@ -142,20 +150,19 @@ export const updateRecord = async ({
       ':officeId': officeId
     },
     key: {
-      PK: employeeEntry ? `${GSI.EMPLOYEE_ID}#${employeeId}` : `${GSI.OFFICE_ID}#${officeId}`,
+      PK: systemId,
       SK: employeeEntry ? `${GSI.OFFICE_ID}#${officeId}` : `${GSI.EMPLOYEE_ID}#${employeeId}`
     },
-    tableName: getWsErpTable(),
+    tableName: getErpTable(),
     updateExpression:
       'SET #employeeName = :employeeName, #address = :address, #countryStateCity = :countryStateCity, #officeName = :officeName, #employeeId = :employeeId, #officeId = :officeId'
   };
-
   return connectToDynamoDB()
     .update(getParamsForUpdate(putParams))
     .promise();
 };
 
-export const updateOffice = async ({ officeName, address, countryStateCity, officeId, employeeId }) => {
+export const updateOffice = async ({ systemId, officeName, address, countryStateCity, officeId, employeeId }) => {
   officeId = officeId || uuid();
   const putParams = {
     attributeNames: {
@@ -171,19 +178,25 @@ export const updateOffice = async ({ officeName, address, countryStateCity, offi
       ':countryStateCity': countryStateCity
     },
     key: {
-      PK: `${GSI.OFFICE_ID}#${officeId}`,
-      SK: employeeId ? `${GSI.EMPLOYEE_ID}#${employeeId}` : officeId
+      PK: systemId,
+      SK: `${GSI.OFFICE_ID}#${officeId}`
     },
-    tableName: getWsErpTable(),
+    tableName: getErpTable(),
     updateExpression:
       'SET #officeName = :officeName, #address = :address, #countryStateCity = :countryStateCity, #officeId = :officeId'
   };
+  if (employeeId) {
+    putParams.updateExpression += `, #employeeId = :employeeId`;
+    putParams.attributeNames['#employeeId'] = `employeeId`;
+    putParams.attributeValues[`:employeeId`] = employeeId;
+  }
+
   return connectToDynamoDB()
     .update(getParamsForUpdate(putParams))
     .promise();
 };
 
-export const updateEmployee = async ({ employeeId, employeeName, officeId }) => {
+export const updateEmployee = async ({ systemId, employeeId, employeeName, officeId }) => {
   employeeId = employeeId || uuid();
   const putParams = {
     attributeNames: {
@@ -195,12 +208,18 @@ export const updateEmployee = async ({ employeeId, employeeName, officeId }) => 
       ':employeeId': employeeId
     },
     key: {
-      PK: `${GSI.EMPLOYEE_ID}#${employeeId}`,
-      SK: officeId ? `${GSI.OFFICE_ID}#${officeId}` : employeeId
+      PK: systemId,
+      SK: `${GSI.EMPLOYEE_ID}#${employeeId}`
     },
-    tableName: getWsErpTable(),
+    tableName: getErpTable(),
     updateExpression: 'SET #employeeName = :employeeName, #employeeId = :employeeId'
   };
+  if (officeId) {
+    putParams.updateExpression += `, #officeId = :officeId`;
+    putParams.attributeNames['#officeId'] = `officeId`;
+    putParams.attributeValues[`:officeId`] = officeId;
+  }
+
   return connectToDynamoDB()
     .update(getParamsForUpdate(putParams))
     .promise();

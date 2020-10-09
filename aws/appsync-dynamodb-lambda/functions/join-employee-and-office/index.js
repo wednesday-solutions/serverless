@@ -1,19 +1,19 @@
 import { getEmployee, getOffice, updateRecord } from '@daos/WednesdayERP';
-import { failure, getFirstFromArray, success } from '@utils/index';
+import { failure, getSystemId, success } from '@utils/index';
 
 exports.handler = async (event, context, callback) => {
   try {
     console.log({ event });
     const { officeId, employeeId } = event.arguments;
+    console.log(getSystemId(event));
     // get employee
-    const empRes = await getEmployee(employeeId);
-    const employee = getFirstFromArray(empRes, { employeeId });
+    const employee = await getEmployee({ ...getSystemId(event), employeeId });
 
     // get office
-    const officeRes = await getOffice(officeId);
-    const office = getFirstFromArray(officeRes, { officeId });
+    const office = await getOffice({ ...getSystemId(event), officeId });
 
     const employeeResult = await updateRecord({
+      ...getSystemId(event),
       employeeEntry: true,
       ...employee,
       ...office,
@@ -21,6 +21,7 @@ exports.handler = async (event, context, callback) => {
       employeeId
     });
     const officeResult = await updateRecord({
+      ...getSystemId(event),
       employeeEntry: false,
       ...employee,
       ...office,

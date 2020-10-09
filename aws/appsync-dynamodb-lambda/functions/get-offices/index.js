@@ -1,11 +1,12 @@
 import get from 'lodash/get';
 import { getAllEmployees, getAllOffices } from '@daos/WednesdayERP';
-import { addPagination, failure, success } from '@utils';
+import { addPagination, failure, getSystemId, success } from '@utils';
 
 exports.handler = async (event, context, callback) => {
   const args = event.arguments;
   try {
     let officeResponse = await getAllOffices({
+      ...getSystemId(event),
       limit: args.pagination.limit,
       nextToken: args.pagination.nextToken
     });
@@ -13,6 +14,7 @@ exports.handler = async (event, context, callback) => {
     await Promise.all(
       officeResponse.Items.map(async office => {
         let employeesRes = await getAllEmployees({
+          ...getSystemId(event),
           limit: get(args, 'pagination.nested.limit'),
           nextToken: get(args, 'pagination.nested.nextToken'),
           officeId: office.officeId

@@ -55,13 +55,15 @@ export const getParamsForQuery = ({
   scanIndexForward,
   consistentRead,
   limit,
-  exclusiveStartKey
+  exclusiveStartKey,
+  filterExpression
 }) => ({
   ScanIndexForward: scanIndexForward || false,
   ConsistentRead: consistentRead || false,
   TableName: tableName,
   IndexName: indexName || null,
   KeyConditionExpression: keyExpression,
+  FilterExpression: filterExpression,
   ExpressionAttributeNames: attributeNames,
   ExpressionAttributeValues: attributeValues,
   Limit: limit,
@@ -93,4 +95,4 @@ export const getParamsForScan = ({
   FilterExpression: filterExpression
 });
 
-export const getWsErpTable = () => `WednesdayERP-${process.env.NAME}-${process.env.STAGE}`;
+export const getErpTable = () => `MultiTenantERP-${process.env.NAME}-${process.env.STAGE}`;

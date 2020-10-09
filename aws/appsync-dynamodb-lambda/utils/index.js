@@ -49,3 +49,5 @@ export const addPagination = dbResponse => {
   }
   return dbResponse;
 };
+
+export const getSystemId = event => ({ systemId: event.headers['x-ws-system-id'] });

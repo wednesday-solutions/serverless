@@ -3,6 +3,7 @@
     "operation": "Invoke",
     "payload": {
         "field": "joinEmployeeAndOffice",
-        "arguments":  $utils.toJson($context.arguments)
+        "arguments":  $utils.toJson($context.arguments),
+        "headers": $utils.toJson($context.request.headers)
     }
 }
