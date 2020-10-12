@@ -29,7 +29,8 @@ module.exports = {
     alias: {
       '@utils': path.resolve(__dirname, 'utils/'),
       '@daos': path.resolve(__dirname, 'daos/'),
-      '@services': path.resolve(__dirname, 'services/')
+      '@services': path.resolve(__dirname, 'services/'),
+      '@mocks': path.resolve(__dirname, '__mocks__/')
     },
     extensions: ['.js', '.jsx', '.react.js'],
     mainFields: ['browser', 'jsnext:main', 'main']
