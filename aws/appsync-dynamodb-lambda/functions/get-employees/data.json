@@ -1,0 +1,17 @@
+{
+  "field": "getEmployees",
+  "arguments": {
+    "pagination": {
+      "limit": 1
+    }
+  },
+  "headers": {
+    "content-type": "application/json",
+    "user-agent": "graphiql-app",
+    "x-api-key": "0123456789",
+    "x-ws-system-id": "WS",
+    "host": "localhost:62222",
+    "connection": "close",
+    "content-length": "429"
+  }
+}}

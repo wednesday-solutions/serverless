@@ -1,0 +1,16 @@
+{
+  "field": "joinEmployeeAndOffice",
+  "arguments": {
+    "officeId": "8b5c3219-b06f-4a6d-9edb-258c29f5b68b",
+    "employeeId": "220ac94b-97bb-4b9f-9a43-f1fb66f6c65b"
+  },
+  "headers": {
+    "content-type": "application/json",
+    "user-agent": "graphiql-app",
+    "x-api-key": "0123456789",
+    "x-ws-system-id": "WS",
+    "host": "localhost:62222",
+    "connection": "close",
+    "content-length": "633"
+  }
+}
