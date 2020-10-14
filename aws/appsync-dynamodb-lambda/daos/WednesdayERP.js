@@ -8,12 +8,6 @@ import {
 } from '@services/dynamodb';
 import { base64Decode } from '@utils';
 
-export const GSI = {
-  EMPLOYEE_ID: 'employeeId',
-  OFFICE_ID: 'officeId',
-  Address: 'address'
-};
-
 export const getEmployee = async ({ systemId, employeeId }) => {
   if (!employeeId) {
     throw new Error(`values for employeeId: ${employeeId} is required`);
@@ -22,7 +16,7 @@ export const getEmployee = async ({ systemId, employeeId }) => {
     tableName: getErpTable(),
     key: {
       PK: systemId,
-      SK: `${GSI.EMPLOYEE_ID}#${employeeId}`
+      SK: `EMPLOYEE_ID#${employeeId}`
     }
   };
 
@@ -43,7 +37,7 @@ export const getOffice = async ({ systemId, officeId }) => {
     tableName: getErpTable(),
     key: {
       PK: systemId,
-      SK: `${GSI.OFFICE_ID}#${officeId}`
+      SK: `OFFICE_ID#${officeId}`
     }
   };
 
@@ -70,7 +64,7 @@ export const getAllEmployees = async ({ systemId, limit, nextToken, officeId }) 
     keyExpression: '#PK = :PK and begins_with(#SK, :SK)',
     attributeValues: {
       ':PK': systemId,
-      ':SK': `${GSI.EMPLOYEE_ID}#`
+      ':SK': `EMPLOYEE_ID#`
     },
     attributeNames: {
       '#PK': 'PK',
@@ -102,7 +96,7 @@ export const getAllOffices = async ({ systemId, nextToken, limit, employeeId }) 
     keyExpression: '#PK = :PK and begins_with(#SK, :SK)',
     attributeValues: {
       ':PK': systemId,
-      ':SK': `${GSI.OFFICE_ID}#`
+      ':SK': `OFFICE_ID#`
     },
     attributeNames: {
       '#PK': 'PK',
@@ -151,7 +145,7 @@ export const updateRecord = async ({
     },
     key: {
       PK: systemId,
-      SK: employeeEntry ? `${GSI.OFFICE_ID}#${officeId}` : `${GSI.EMPLOYEE_ID}#${employeeId}`
+      SK: employeeEntry ? `OFFICE_ID#${officeId}` : `EMPLOYEE_ID#${employeeId}`
     },
     tableName: getErpTable(),
     updateExpression:
@@ -179,7 +173,7 @@ export const updateOffice = async ({ systemId, officeName, address, countryState
     },
     key: {
       PK: systemId,
-      SK: `${GSI.OFFICE_ID}#${officeId}`
+      SK: `OFFICE_ID#${officeId}`
     },
     tableName: getErpTable(),
     updateExpression:
@@ -209,7 +203,7 @@ export const updateEmployee = async ({ systemId, employeeId, employeeName, offic
     },
     key: {
       PK: systemId,
-      SK: `${GSI.EMPLOYEE_ID}#${employeeId}`
+      SK: `EMPLOYEE_ID#${employeeId}`
     },
     tableName: getErpTable(),
     updateExpression: 'SET #employeeName = :employeeName, #employeeId = :employeeId'
