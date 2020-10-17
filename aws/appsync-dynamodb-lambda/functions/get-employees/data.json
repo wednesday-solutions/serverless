@@ -2,7 +2,12 @@
   "field": "getEmployees",
   "arguments": {
     "pagination": {
-      "limit": 1
+      "limit": 1,
+      "nextToken": "",
+      "nested": {
+        "limit": 1,
+        "nextToken": ""
+      }
     }
   },
   "headers": {
