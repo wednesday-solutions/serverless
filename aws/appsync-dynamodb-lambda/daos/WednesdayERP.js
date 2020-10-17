@@ -52,6 +52,9 @@ export const getOffice = async ({ systemId, officeId }) => {
 };
 
 export const getAllEmployees = async ({ systemId, limit, nextToken, officeId }) => {
+  if (!systemId) {
+    throw new Error(`systempId is required`);
+  }
   if (nextToken) {
     try {
       nextToken = base64Decode(nextToken);
@@ -84,6 +87,9 @@ export const getAllEmployees = async ({ systemId, limit, nextToken, officeId }) 
 };
 
 export const getAllOffices = async ({ systemId, nextToken, limit, employeeId }) => {
+  if (!systemId) {
+    throw new Error(`systempId is required`);
+  }
   if (nextToken) {
     try {
       nextToken = base64Decode(nextToken);
@@ -158,6 +164,9 @@ export const updateRecord = async ({
 
 export const updateOffice = async ({ systemId, officeName, address, countryStateCity, officeId, employeeId }) => {
   officeId = officeId || uuid();
+  if (!officeName) {
+    throw new Error(`values for officeName: ${officeName} is required`);
+  }
   const putParams = {
     attributeNames: {
       '#officeName': 'officeName',
@@ -192,6 +201,9 @@ export const updateOffice = async ({ systemId, officeName, address, countryState
 
 export const updateEmployee = async ({ systemId, employeeId, employeeName, officeId }) => {
   employeeId = employeeId || uuid();
+  if (!employeeName) {
+    throw new Error(`values for employeeName: ${employeeName} is required`);
+  }
   const putParams = {
     attributeNames: {
       '#employeeName': 'employeeName',

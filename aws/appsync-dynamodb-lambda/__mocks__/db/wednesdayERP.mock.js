@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk-mock';
 import { GET_EMPLOYEE_RES, GET_OFFICE_RES, GET_ALL_EMPLOYEE_RES, GET_ALL_OFFICESS_RES } from '@mocks/constants';
+import { base64Decode } from '@utils';
 
 export function successGetEmployee({ systemId, employeeId }) {
   AWS.mock('DynamoDB.DocumentClient', 'get', async function(params, callback) {
@@ -32,21 +33,6 @@ export function failureGetOffice({ systemId, officeId }) {
   });
 }
 
-export function successGetEmployees({ systemId, limit, nextToken, officeId }) {
-  AWS.mock('DynamoDB.DocumentClient', 'query', async function(params, callback) {
-    expect(params.ExpressionAttributeNames).toEqual({
-      '#PK': 'PK',
-      '#SK': 'SK'
-    });
-    expect(params.ExpressionAttributeValues).toEqual({
-      ':PK': systemId,
-      ':SK': `EMPLOYEE_ID#`
-    });
-    expect(params.KeyConditionExpression).toEqual('#PK = :PK and begins_with(#SK, :SK)');
-    callback(null, GET_ALL_EMPLOYEE_RES);
-  });
-}
-
 export function successGetEmployeesNext({ systemId, limit, nextToken, officeId }) {
   AWS.mock('DynamoDB.DocumentClient', 'query', async function(params, callback) {
     expect(params.ExpressionAttributeNames).toEqual({
@@ -58,13 +44,13 @@ export function successGetEmployeesNext({ systemId, limit, nextToken, officeId }
       ':SK': `EMPLOYEE_ID#`
     });
     expect(params.KeyConditionExpression).toEqual('#PK = :PK and begins_with(#SK, :SK)');
-    expect(params.exclusiveStartKey).toEqual(nextToken);
+    expect(params.ExclusiveStartKey).toEqual(base64Decode(nextToken));
 
     callback(null, GET_ALL_EMPLOYEE_RES);
   });
 }
 
-export function successGetEmployeesByOfficeId({ systemId, limit, nextToken, officeId }) {
+export function successGetEmployeesByOfficeId({ systemId, officeId }) {
   AWS.mock('DynamoDB.DocumentClient', 'query', async function(params, callback) {
     expect(params.ExpressionAttributeNames).toEqual({
       '#PK': 'PK',
@@ -77,8 +63,23 @@ export function successGetEmployeesByOfficeId({ systemId, limit, nextToken, offi
       ':officeId': officeId
     });
     expect(params.KeyConditionExpression).toEqual('#PK = :PK and begins_with(#SK, :SK)');
-    expect(params.exclusiveStartKey).toEqual(nextToken);
 
+    callback(null, GET_ALL_EMPLOYEE_RES);
+  });
+}
+
+export function successGetEmployees({ systemId, limit, nextToken, officeId }) {
+  AWS.mock('DynamoDB.DocumentClient', 'query', async function(params, callback) {
+    console.log({ params });
+    expect(params.ExpressionAttributeNames).toEqual({
+      '#PK': 'PK',
+      '#SK': 'SK'
+    });
+    expect(params.ExpressionAttributeValues).toEqual({
+      ':PK': systemId,
+      ':SK': `EMPLOYEE_ID#`
+    });
+    expect(params.KeyConditionExpression).toEqual('#PK = :PK and begins_with(#SK, :SK)');
     callback(null, GET_ALL_EMPLOYEE_RES);
   });
 }
@@ -109,7 +110,7 @@ export function successGetOfficessNext({ systemId, limit, nextToken, employeeId 
       ':SK': `OFFICE_ID#`
     });
     expect(params.KeyConditionExpression).toEqual('#PK = :PK and begins_with(#SK, :SK)');
-    expect(params.exclusiveStartKey).toEqual(nextToken);
+    expect(params.ExclusiveStartKey).toEqual(base64Decode(nextToken));
 
     callback(null, GET_ALL_OFFICESS_RES);
   });
@@ -128,7 +129,7 @@ export function successGetOfficessByEmployeeId({ systemId, limit, nextToken, emp
       ':employeeId': employeeId
     });
     expect(params.KeyConditionExpression).toEqual('#PK = :PK and begins_with(#SK, :SK)');
-    expect(params.exclusiveStartKey).toEqual(nextToken);
+    expect(params.ExclusiveStartKey).toEqual(base64Decode(nextToken));
 
     callback(null, GET_ALL_OFFICESS_RES);
   });

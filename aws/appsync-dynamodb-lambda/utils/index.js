@@ -4,6 +4,15 @@ export const isLocal = () =>
   (process.env.IS_LOCAL && JSON.parse(process.env.IS_LOCAL)) ||
   (process.env.IS_OFFLINE && JSON.parse(process.env.IS_OFFLINE));
 
+export const failure = (callback, error) => {
+  console.log('failure', error);
+  return callback(get(error, 'message', 'Something went wrong. Please contact support@bankshift.com'));
+};
+
+export const success = (callback, data) => {
+  console.log('success', JSON.stringify(data));
+  return callback(null, data);
+};
 export const base64Encode = data => {
   try {
     data = JSON.stringify(data);
@@ -26,16 +35,6 @@ export const base64Decode = data => {
   return null;
 };
 
-export const failure = (callback, error) => {
-  console.log('failure', error);
-  return callback(get(error, 'message', 'Something went wrong. Please contact support@bankshift.com'));
-};
-
-export const success = (callback, data) => {
-  console.log('success', JSON.stringify(data));
-  return callback(null, data);
-};
-
 export const getFirstFromArray = (dbResponse, args) => {
   if (get(dbResponse.Items, 'length')) {
     return dbResponse.Items[0];
@@ -50,7 +49,12 @@ export const addPagination = dbResponse => {
   return dbResponse;
 };
 
-export const getSystemId = event => ({ systemId: event.headers['x-ws-system-id'] });
+export const getSystemId = event => {
+  if (!event.headers) {
+    return {};
+  }
+  return { systemId: event.headers['x-ws-system-id'] };
+};
 
 export const logHandler = (event, callback) => {
   console.log(JSON.stringify({ event }));

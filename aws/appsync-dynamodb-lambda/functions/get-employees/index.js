@@ -22,6 +22,7 @@ exports.handler = async (event, context, callback) =>
             employeeId: employee.employeeId
           });
           officeRes = addPagination(officeRes);
+          console.log({ officeRes });
           officeRes.items = officeRes.Items;
           employee.offices = officeRes;
           return employee;

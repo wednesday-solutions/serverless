@@ -8,7 +8,8 @@ export const CONSTANTS = {
   countryStateCity: '#IN#MH#PUN',
   systemId: 'WS',
   limit: 1,
-  nextToken: 'eyJTSyI6IkVNUExPWUVFX0lEIzIyMGFjOTRiLTk3YmItNGI5Zi05YTQzLWYxZmI2NmY2YzY1YiIsIlBLIjoiV1MifQ=='
+  plainObj: { PK: 'WS', SK: 'EMPLOYEE_ID#220ac94b-97bb-4b9f-9a43-f1fb66f6c65b' },
+  nextToken: 'eyJQSyI6IldTIiwiU0siOiJFTVBMT1lFRV9JRCMyMjBhYzk0Yi05N2JiLTRiOWYtOWE0My1mMWZiNjZmNmM2NWIifQ=='
 };
 
 export const GET_EMPLOYEE_RES = {

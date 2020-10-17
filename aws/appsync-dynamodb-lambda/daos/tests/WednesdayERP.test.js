@@ -114,7 +114,7 @@ describe('usersDao', () => {
       expect(ddb.query.mock.calls.length).toBe(1);
     });
     it('should get the next records when nextToken is provided', async () => {
-      successGetEmployeesNext({ systemId: CONSTANTS.systemId, limit: CONSTANTS.limit });
+      successGetEmployeesNext({ systemId: CONSTANTS.systemId, limit: CONSTANTS.limit, nextToken: CONSTANTS.nextToken });
 
       connectToDDBAndSpy('query');
       const response = await getAllEmployees({
@@ -156,10 +156,10 @@ describe('usersDao', () => {
 
       expect(response).toBeTruthy();
       expect(response).toEqual(GET_ALL_OFFICESS_RES);
-      expect(ddb.query.mock.calls.length).toBe(2);
+      expect(ddb.query.mock.calls.length).toBe(1);
     });
     it('should get the next records when nextToken is provided', async () => {
-      successGetOfficessNext({ systemId: CONSTANTS.systemId, limit: CONSTANTS.limit });
+      successGetOfficessNext({ systemId: CONSTANTS.systemId, limit: CONSTANTS.limit, nextToken: CONSTANTS.nextToken });
 
       connectToDDBAndSpy('query');
       const response = await getAllOffices({
@@ -170,13 +170,14 @@ describe('usersDao', () => {
 
       expect(response).toBeTruthy();
       expect(response).toEqual(GET_ALL_OFFICESS_RES);
-      expect(ddb.query.mock.calls.length).toBe(2);
+      expect(ddb.query.mock.calls.length).toBe(1);
     });
     it('should get all officess for a particular employee ', async () => {
       const args = {
         systemId: CONSTANTS.systemId,
         limit: CONSTANTS.limit,
-        employeeId: CONSTANTS.employeeId
+        employeeId: CONSTANTS.employeeId,
+        nextToken: CONSTANTS.nextToken
       };
       successGetOfficessByEmployeeId(args);
 
@@ -185,7 +186,7 @@ describe('usersDao', () => {
 
       expect(response).toBeTruthy();
       expect(response).toEqual(GET_ALL_OFFICESS_RES);
-      expect(ddb.query.mock.calls.length).toBe(2);
+      expect(ddb.query.mock.calls.length).toBe(1);
     });
   });
 
@@ -227,7 +228,8 @@ describe('usersDao', () => {
       officeName: CONSTANTS.officeName,
       address: CONSTANTS.address,
       countryStateCity: CONSTANTS.countryStateCity,
-      officeId: CONSTANTS.officeId
+      officeId: CONSTANTS.officeId,
+      employeeName: CONSTANTS.employeeName
     };
     it('should updateOffice without employeeId', async () => {
       successUpdateOffice(args);
@@ -237,7 +239,7 @@ describe('usersDao', () => {
 
       expect(response).toBeTruthy();
       expect(response).toEqual({ Attributes: GET_OFFICE_RES });
-      expect(ddb.update.mock.calls.length).toBe(2);
+      expect(ddb.update.mock.calls.length).toBe(1);
     });
     it('should updateOffice with employeeId', async () => {
       successUpdateOfficeWithEmployeeId({ employeeId: CONSTANTS.employeeId, ...args });
@@ -247,7 +249,7 @@ describe('usersDao', () => {
 
       expect(response).toBeTruthy();
       expect(response).toEqual({ Attributes: GET_OFFICE_RES });
-      expect(ddb.update.mock.calls.length).toBe(2);
+      expect(ddb.update.mock.calls.length).toBe(1);
     });
   });
   describe('updateEmployee', () => {
@@ -256,7 +258,8 @@ describe('usersDao', () => {
       officeName: CONSTANTS.officeName,
       address: CONSTANTS.address,
       countryStateCity: CONSTANTS.countryStateCity,
-      employeeId: CONSTANTS.employeeId
+      employeeId: CONSTANTS.employeeId,
+      employeeName: CONSTANTS.employeeName
     };
     it('should updateOffice without officeId', async () => {
       successUpdateEmployee(args);
