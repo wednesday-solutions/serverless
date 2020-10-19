@@ -53,7 +53,7 @@ export const getOffice = async ({ systemId, officeId }) => {
 
 export const getAllEmployees = async ({ systemId, limit, nextToken, officeId }) => {
   if (!systemId) {
-    throw new Error(`systempId is required`);
+    throw new Error(`systemId is required`);
   }
   if (nextToken) {
     try {
@@ -88,7 +88,7 @@ export const getAllEmployees = async ({ systemId, limit, nextToken, officeId }) 
 
 export const getAllOffices = async ({ systemId, nextToken, limit, employeeId }) => {
   if (!systemId) {
-    throw new Error(`systempId is required`);
+    throw new Error(`systemId is required`);
   }
   if (nextToken) {
     try {
