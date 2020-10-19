@@ -8,7 +8,6 @@ exports.handler = async (event, context, callback) =>
 
       // get employee
       const employee = await getEmployee({ ...getSystemId(event), employeeId });
-
       // get office
       const office = await getOffice({ ...getSystemId(event), officeId });
 
@@ -20,6 +19,7 @@ exports.handler = async (event, context, callback) =>
         officeId,
         employeeId
       });
+
       const officeResult = await updateRecord({
         ...getSystemId(event),
         employeeEntry: false,

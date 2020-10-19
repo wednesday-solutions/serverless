@@ -15,6 +15,9 @@ export const success = (callback, data) => {
 };
 export const base64Encode = data => {
   try {
+    if (!data) {
+      throw new Error('Nothing to encode');
+    }
     data = JSON.stringify(data);
     const buff = Buffer.from(data);
     return buff.toString('base64');
@@ -26,6 +29,9 @@ export const base64Encode = data => {
 
 export const base64Decode = data => {
   try {
+    if (!data) {
+      throw new Error('Nothing to decode');
+    }
     data = JSON.stringify(data);
     const buff = Buffer.from(data, 'base64');
     return JSON.parse(buff.toString('ascii'));
@@ -36,10 +42,14 @@ export const base64Decode = data => {
 };
 
 export const getFirstFromArray = (dbResponse, args) => {
-  if (get(dbResponse.Items, 'length')) {
+  try {
+    if (!get(dbResponse.Items, 'length')) {
+      throw new Error(`No record present: {dbResponse: ${JSON.stringify(dbResponse)}, args: ${JSON.stringify(args)}}`);
+    }
     return dbResponse.Items[0];
+  } catch (err) {
+    console.log({ err });
   }
-  throw new Error(`No record present: {dbResponse: ${JSON.stringify(dbResponse)}, args: ${JSON.stringify(args)}}`);
 };
 
 export const addPagination = dbResponse => {
