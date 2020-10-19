@@ -6,7 +6,8 @@ import {
   success,
   getFirstFromArray,
   logHandler,
-  addPagination
+  addPagination,
+  getSystemId
 } from '@utils';
 import { CONSTANTS } from '@mocks/constants';
 describe('utils/index', () => {
@@ -42,11 +43,19 @@ describe('utils/index', () => {
       const response = base64Encode(CONSTANTS.plainObj);
       expect(response).toBeTruthy();
     });
+    it('should return encode string', async () => {
+      const response = base64Encode(null);
+      expect(response).toBeFalsy();
+    });
   });
   describe('base64Decode', () => {
     it('should return decoded string', async () => {
       const response = base64Decode(CONSTANTS.nextToken);
       expect(response).toEqual(CONSTANTS.plainObj);
+    });
+    it('should return decoded string', async () => {
+      const response = base64Decode(null);
+      expect(response).toBeFalsy();
     });
   });
   describe('failure', () => {
@@ -89,8 +98,16 @@ describe('utils/index', () => {
       const mockDbResponse = {
         Items: [{ name: 'Tapan' }]
       };
-      const response = getFirstFromArray(mockDbResponse);
+      const response = getFirstFromArray(mockDbResponse, {});
       expect(response).toEqual({ name: 'Tapan' });
+    });
+
+    it('should throw error', async () => {
+      const mockDbResponse = {
+        Items: []
+      };
+      const response = getFirstFromArray(mockDbResponse, null);
+      expect(response).toBeFalsy();
     });
   });
   describe('logHandler', () => {
@@ -119,6 +136,22 @@ describe('utils/index', () => {
           nextToken: CONSTANTS.nextToken
         }
       });
+    });
+  });
+  describe('getSystemId', () => {
+    it('should return getSystemId', async () => {
+      const event = {
+        headers: { 'x-ws-system-id': 'WS' }
+      };
+      const response = getSystemId(event);
+      expect(response).toEqual({
+        systemId: event.headers['x-ws-system-id']
+      });
+    });
+    it('should return decoded string', async () => {
+      const event = {};
+      const response = getSystemId(event);
+      expect(response).toEqual({});
     });
   });
 });
