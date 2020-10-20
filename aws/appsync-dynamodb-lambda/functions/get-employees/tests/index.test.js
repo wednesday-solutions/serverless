@@ -1,6 +1,6 @@
 import { handler } from '../index';
 import { connectToDynamoDB } from '@services/dynamodb';
-import { successGetEmployeesNext, successGetOfficessByEmployeeId } from '@mocks/db/wednesdayERP.mock';
+import { successGetEmployeesNext } from '@mocks/db/wednesdayERP.mock';
 import { CONSTANTS, GET_ALL_OFFICESS_RES, GET_ALL_EMPLOYEE_RES } from '@mocks/constants';
 describe('functions/onfido/applicant-check-status', () => {
   let event;
