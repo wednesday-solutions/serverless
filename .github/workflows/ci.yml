@@ -26,9 +26,9 @@ jobs:
              :
              directory=$(echo "$i" | sed -e "s/serverless.yml//")
              cd "$directory" && \
-             npm install && \
-             npm run lint:eslint --if-present && \
-             npm run test --if-present && \
-             npm run build && \
+             yarn install && \
+             yarn run lint:eslint --if-present && \
+             yarn run test --if-present && \
+             yarn run build && \
              cd "$root_directory"  || exit
           done
