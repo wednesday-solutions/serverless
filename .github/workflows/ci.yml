@@ -27,8 +27,8 @@ jobs:
              directory=$(echo "$i" | sed -e "s/serverless.yml//")
              cd "$directory" && \
              yarn install && \
-             yarn run lint:eslint --if-present && \
-             yarn run test --if-present && \
+             yarn run lint:eslint  && \
+             yarn run test  && \
              yarn run build && \
              cd "$root_directory"  || exit
           done
