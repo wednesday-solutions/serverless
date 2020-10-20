@@ -63,7 +63,7 @@ custom:
   appSyncCloudFront:
     domainName: api-${env:STAGE}.${env:DOMAIN}
     stage: ${env:STAGE}
-    certificate: arn:aws:acm:${env:REGION}:${env:ACCOUNT_ID}:certificate/${env:ACM_ARN}
+    certificate: arn:aws:acm:us-east-1:${env:ACCOUNT_ID}:certificate/${env:ACM_ARN}
     querystring: all
     priceClass: PriceClass_100
     minimumProtocolVersion: TLSv1.2_2019
