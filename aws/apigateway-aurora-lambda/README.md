@@ -1,4 +1,6 @@
 # UUID
+Write a backend that exposes an endpoint that whenever invoked generates a new UUID, writes that to the database and returns it to the calling client. The backend should also expose an API that accepts a UUID and updates the updated_at timestamp if its already present in the db, else inserts it.
+
 
 ## Rest APIs
 Use API Gateway to expose a backend that provides
