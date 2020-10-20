@@ -31,3 +31,6 @@
 
   <span>We’re always looking for people who value their work, so come and join us. <a href="https://www.wednesday.is/hiring">We are hiring!</a></span>
 </div>
+
+
+![Serverless CI](https://github.com/wednesday-solutions/serverless/workflows/Serverless%20CI/badge.svg)
