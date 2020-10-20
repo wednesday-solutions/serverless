@@ -1,0 +1,6 @@
+- type: AMAZON_DYNAMODB
+  name: WednesdayERP
+  description: "WednesdayERP table"
+  config:
+    region: ${env:REGION}
+    tableName: { Ref: WednesdayERP }

@@ -1,0 +1,26 @@
+getEmployees:
+  handler: functions/get-employees/index.handler
+  role: LambdaDDBRole
+
+getEmployee:
+  handler: functions/get-employee/index.handler
+  role: LambdaDDBRole
+
+getOffices:
+  handler: functions/get-offices/index.handler
+  role: LambdaDDBRole
+
+getOffice:
+  handler: functions/get-office/index.handler
+  role: LambdaDDBRole
+
+putEmployee:
+  handler: functions/put-employee/index.handler
+  role: LambdaDDBRole
+
+putOffice:
+  handler: functions/put-office/index.handler
+  role: LambdaDDBRole
+joinEmployeeAndOffice:
+  handler: functions/join-employee-and-office/index.handler
+  role: LambdaDDBRole

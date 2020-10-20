@@ -1,0 +1,20 @@
+# put employee
+- dataSource: Lambda_putEmployee
+  type: Mutation
+  field: putEmployee
+  request: 'InvokePutEmployee.req.vtl'
+  response: 'InvokePutEmployee.res.vtl'
+
+# put office
+- dataSource: Lambda_putOffice
+  type: Mutation
+  field: putOffice
+  request: 'InvokePutOffice.req.vtl'
+  response: 'InvokePutOffice.res.vtl'
+
+# put office
+- dataSource: Lambda_joinEmployeeAndOffice
+  type: Mutation
+  field: joinEmployeeAndOffice
+  request: 'InvokeJoinEmployeeAndOffice.req.vtl'
+  response: 'InvokeJoinEmployeeAndOffice.res.vtl'

@@ -1,0 +1,16 @@
+{
+  "field": "putEmployee",
+  "arguments": {
+    "employeeId": "220ac94b-97bb-4b9f-9a43-f1fb66f6c65b",
+    "employeeName": "Mac111"
+  },
+  "headers": {
+    "content-type": "application/json",
+    "user-agent": "graphiql-app",
+    "x-api-key": "0123456789",
+    "x-ws-system-id": "WS",
+    "host": "localhost:62222",
+    "connection": "close",
+    "content-length": "313"
+  }
+}

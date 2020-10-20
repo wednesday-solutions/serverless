@@ -7,3 +7,5 @@
 **/coverage/
 **/package-lock.json
 **/.env.dev
+**/.dynamodb
+**/.webpack
