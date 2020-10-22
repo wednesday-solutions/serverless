@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="472" height="364" viewBox="0 0 472 364">
+  <defs>
+    <clipPath id="clip-path">
+      <path id="Path_247" data-name="Path 247" d="M0,8A8,8,0,0,1,8,0H464a8,8,0,0,1,8,8V356a8,8,0,0,1-8,8H8a8,8,0,0,1-8-8Z" fill="#fff"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <path id="Path_239" data-name="Path 239" d="M0,0H474V364H0Z" fill="#fff"/>
+    </clipPath>
+  </defs>
+  <g id="apigateway-aurora-lambda-no-text" transform="translate(-2934 609)">
+    <g id="appsync_dynamodb_lambda_github_no_text" transform="translate(1474 -469)">
+      <g id="appsync_dynamodb_lambda_github" transform="translate(1460 -140)" clip-path="url(#clip-path)">
+        <g id="Group_78" data-name="Group 78" clip-path="url(#clip-path-2)">
+          <path id="Path_248" data-name="Path 248" d="M8,0H466a8,8,0,0,1,8,8V356a8,8,0,0,1-8,8H8a8,8,0,0,1-8-8V8A8,8,0,0,1,8,0Z" fill="#e3f5f2"/>
+          <path id="Path_235" data-name="Path 235" d="M196.563-204.35C99.45-235.08,45-181.126,24.881-119.739S31.1,25.367,15.72,84.206s-73.846,87.717-73.846,87.717" fill="none" stroke="#63c4b1" stroke-width="2" opacity="0.06"/>
+          <path id="Path_236" data-name="Path 236" d="M209.36-87.192C112.247-117.92,57.8-63.968,37.678-2.58s6.217,145.1-9.16,203.945-73.846,87.716-73.846,87.716" fill="none" stroke="#63c4b1" stroke-width="2" opacity="0.06"/>
+          <path id="Path_237" data-name="Path 237" d="M183.413-102.658C84.228-88.751,45.674-13.65,41.357,53.295S82,187.745,81.559,250.182,32.753,365.788,32.753,365.788M710.594-156.869c-148.856-47.1-232.313,35.6-263.156,129.693s9.53,222.42-14.041,312.609S320.206,419.885,320.206,419.885" fill="none" stroke="#63c4b1" stroke-width="2" opacity="0.06"/>
+          <path id="Path_238" data-name="Path 238" d="M630.563,41.307C533.45,10.577,479,64.531,458.881,125.918s6.217,145.106-9.161,203.945-73.845,87.717-73.845,87.717" fill="none" stroke="#fbfbfb" stroke-width="2" opacity="0.06"/>
+        </g>
+      </g>
+    </g>
+    <g id="Group_81" data-name="Group 81" transform="translate(1928 -859)">
+      <g id="aurora-7" transform="translate(1143 341)">
+        <path id="Path_250" data-name="Path 250" d="M127.578,45.76H84.643l21.5,37.025L127.577,45.76M80.453,48.155,59.006,85.245h42.945l-21.5-37.09m21.5,41.911H59l21.447,37.117,21.5-37.117m-47.067,2.4-21.57,37.081H76.321L54.884,92.465M131.7,48.155l-21.428,37.09h42.937L131.7,48.155m21.511,41.911h-42.94l21.431,37.117,21.51-37.117M106.145,3.8l-21.5,37.144h42.933L106.145,3.8M76.322,134.375H33.314l21.57,37.36,21.437-37.36m81.02-41.911-21.494,37.081h42.994l-21.5-37.081m21.5,41.911H135.85l21.494,37.36,21.5-37.36" transform="translate(-7.746 -1.391)" fill="#63c4b1"/>
+        <path id="Path_251" data-name="Path 251" d="M98.464,91.743l-21.5,37.081H119.9L98.465,91.743m-29.823-46.7H25.634L47.2,82.063,68.642,45.038M.066,84.522H43L21.5,47.433.066,84.522M21.5,126.461,43,89.344H.066L21.5,126.461M175.285,47.433l-21.424,37.09h42.923l-21.5-37.09m21.5,41.911H153.861l21.426,37.117,21.5-37.117M145.535.67h-42.94l21.431,37.048L145.535.669M119.9,133.653h-43l21.571,37.36,21.432-37.36m4.127,2.391L102.6,173.458h42.937l-21.509-37.413M94.27.67H51.325L72.772,37.718,94.269.669M47.2,3.073,25.634,40.217H68.641L47.2,3.073m102.458,0L128.168,40.217h42.994l-21.5-37.144m21.5,41.965H128.169l21.494,37.025,21.5-37.025M72.773,136.044,51.326,173.457H94.271l-21.5-37.413" transform="translate(-0.066 -0.669)" fill="#fff"/>
+        <path id="Polygon_1" data-name="Polygon 1" d="M21.532,0,43.064,37.681H0Z" transform="translate(25.531 2.307)" fill="#63c4b1"/>
+        <path id="Polygon_2" data-name="Polygon 2" d="M21.532,0,43.064,37.681H0Z" transform="translate(93.972 37.681) rotate(180)" fill="#63c4b1"/>
+        <path id="Polygon_3" data-name="Polygon 3" d="M21.532,0,43.064,37.681H0Z" transform="translate(197.018 126.116) rotate(180)" fill="#63c4b1"/>
+      </g>
+    </g>
+  </g>
+</svg>
