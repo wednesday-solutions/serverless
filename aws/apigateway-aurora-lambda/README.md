@@ -14,7 +14,7 @@
 
   <p>
     <h4>
-      Expert teams of digital product strategists, developers, and designers.
+      Expert teams of digital product strategists, developers, and designers. 
     </h4>
   </p>
 
