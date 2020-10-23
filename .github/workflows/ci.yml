@@ -18,17 +18,24 @@ jobs:
           node-version: "13"
       - name: install-lint-test-build
         run: |
-          files_str=$(find . -name "serverless.yml" -not -path "**/node_modules/**")
-          IFS=', ' read -r -a array <<< "$files_str"
+          array=()
+          find . -name "serverless.yml" -not -path "**/node_modules/**" -print0 >tmpfile
+
+          while IFS=  read -r -d $'\0'; do
+              array+=("$REPLY")
+          done <tmpfile
+          rm -f tmpfile
+
           root_directory=$(pwd)
           for i in "${array[@]}"
           do
              :
              directory=$(echo "$i" | sed -e "s/serverless.yml//")
              cd "$directory" && \
+             echo "directory: $directory"
              yarn install && \
-             yarn run --if-present lint:eslint  && \
-             yarn run --if-present test  && \
+             (yarn run --if-present lint:eslint || true)  && \
+             (yarn run --if-present test || true)  && \
              yarn run build && \
              cd "$root_directory"  || exit
           done
