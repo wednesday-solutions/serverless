@@ -1,0 +1,7 @@
+{
+  "body": "{\"officeName\":\"WS\", \"officeAddress\":\"Pune, MH, India\"}",
+  "headers": {
+    "content-type": "application/json",
+    "x-ws-system-id": "WS"
+  }
+}

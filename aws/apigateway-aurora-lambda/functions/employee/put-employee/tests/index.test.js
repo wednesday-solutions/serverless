@@ -1,39 +1,31 @@
-import { CONSTANTS } from '@mocks/constants';
 import { resetAndMockDB } from '@utils/testUtils';
 
-describe('put-uuid', () => {
-  let mocks;
+describe('put-employee', () => {
   let event;
+  let mocks;
 
   beforeEach(() => {
     event = require('../data.json');
-
     mocks = {
       callback: jest.fn()
     };
     jest.spyOn(mocks, 'callback');
   });
-  it('should update the updatedAt if the UUID is already present', async () => {
-    resetAndMockDB();
-    const handler = require('../index').handler;
-    await handler({ body: `{"uuid": "${CONSTANTS.uuid}"}`, headers: event.headers }, null, mocks.callback);
-    expect(mocks.callback.mock.calls.length).toBe(1);
-    expect(mocks.callback.mock.calls[0][0]).toBe(null);
-    expect(mocks.callback.mock.calls[0][1]).toBeTruthy();
-  });
-
-  it('should add a new UUID', async () => {
-    const newUUID = 'uuid1';
+  it('should update/put an employee', async () => {
     await resetAndMockDB(mockDbs => {
-      mockDbs.uuids.findOne = () => null;
-      mockDbs.uuids.create = () => ({ uuid: newUUID, updatedAt: CONSTANTS.updatedAt });
+      mockDbs.employees.upsert = () => true;
     });
     const handler = require('../index').handler;
-    await handler({ body: `{"uuid": "${CONSTANTS.uuid}"}`, headers: event.headers }, null, mocks.callback);
+    await handler(event, null, mocks.callback);
     expect(mocks.callback.mock.calls.length).toBe(1);
     expect(mocks.callback.mock.calls[0][0]).toBe(null);
     expect(mocks.callback.mock.calls[0][1]).toBeTruthy();
+    expect(mocks.callback.mock.calls[0][1]).toEqual({
+      status: 200,
+      body: JSON.stringify({ res: true })
+    });
   });
+
   it('should throw an error when req Id is missing', async () => {
     event.headers['x-ws-system-id'] = null;
     const handler = require('../index').handler;

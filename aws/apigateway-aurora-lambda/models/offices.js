@@ -2,17 +2,30 @@
 
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('uuids', {
+  return sequelize.define('offices', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    uuid: {
+    office_name: {
       type: DataTypes.STRING(36),
       allowNull: false,
-      unique: "uuid"
+      unique: "office_name"
+    },
+    office_address: {
+      type: DataTypes.STRING(36),
+      allowNull: false
+    },
+    employee_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'employees',
+        key: 'id'
+      },
+      unique: "offices_employee_id_fk"
     },
     updated_at: {
       type: DataTypes.DATE,
@@ -21,7 +34,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'uuids',
+    tableName: 'offices',
     timestamps: false
     });
 };
