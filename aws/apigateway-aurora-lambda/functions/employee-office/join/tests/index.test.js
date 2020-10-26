@@ -20,7 +20,7 @@ describe('join-office-employee', () => {
       mockDbs.offices.findOne = () => CONSTANTS.office;
     });
     await resetAndMockDB(mockDbs => {
-      mockDbs.employee_office.upsert = () => true;
+      mockDbs.employeeOffice.upsert = () => true;
     });
     const handler = require('../index').handler;
     await handler(event, null, mocks.callback);

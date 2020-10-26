@@ -8,11 +8,11 @@ export const handler = async (event, context, callback) =>
         throw new Error('Request Id Missing!');
       }
       let res;
-      console.log({ limit, offset });
+      const { offices, employeeOffice } = getDB();
       if (!employeeId) {
-        res = await getDB().offices.findAll();
+        res = await offices.findAll();
       } else {
-        res = await getDB().employee_office.findAll({ limit, offset, where: { employee_id: employeeId } });
+        res = await employeeOffice.findAll({ limit, offset, where: { employee_id: employeeId } });
       }
 
       return success(callback, {

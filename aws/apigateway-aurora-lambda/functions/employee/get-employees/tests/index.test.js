@@ -30,7 +30,7 @@ describe('get-employees', () => {
 
   it('should fetch all employees of the given officeId', async () => {
     await resetAndMockDB(mockDbs => {
-      mockDbs.employee_office.findAll = () => [CONSTANTS.employee];
+      mockDbs.employeeOffice.findAll = () => [CONSTANTS.employee];
     });
     const handler = require('../index').handler;
     await handler(event, null, mocks.callback);

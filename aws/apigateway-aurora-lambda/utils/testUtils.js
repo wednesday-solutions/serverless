@@ -16,7 +16,7 @@ export function configDB() {
     employee_id: null,
     updated_at: CONSTANTS.updatedAt
   });
-  const employeeOfficeMock = DBConnectionMock.define('employee_office', {
+  const employeeOfficeMock = DBConnectionMock.define('employeeOffice', {
     office_name: CONSTANTS.office.office_address,
     office_address: CONSTANTS.office.office_address,
     employee_name: CONSTANTS.employee.employee_name,
@@ -41,7 +41,7 @@ export function configDB() {
     uuids: uuidsMock,
     employees: employeesMock,
     offices: officesMock,
-    employee_office: employeeOfficeMock
+    employeeOffice: employeeOfficeMock
   };
 }
 

@@ -11,11 +11,12 @@ export const handler = async (event, context, callback) =>
       const { uuid } = JSON.parse(event.body);
       const dbResponse = await getDB().uuids.findOne({ where: { uuid }, raw: true });
       let newUUID;
+      const { uuids } = getDB();
       if (dbResponse) {
-        await getDB().uuids.update({ updatedAt: moment() }, { where: { id: dbResponse.id } });
-        newUUID = await getDB().uuids.findOne({ where: { uuid }, raw: true });
+        await uuids.update({ updatedAt: moment() }, { where: { id: dbResponse.id } });
+        newUUID = await uuids.findOne({ where: { uuid }, raw: true });
       } else {
-        newUUID = await getDB().uuids.create({ uuid });
+        newUUID = await uuids.create({ uuid });
       }
       return success(callback, {
         status: 200,
