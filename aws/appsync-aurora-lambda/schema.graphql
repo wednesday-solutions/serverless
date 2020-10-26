@@ -1,0 +1,63 @@
+input PaginatedInput {
+  limit: Int
+  nextToken: String
+  nested: PaginatedInput
+}
+
+input NestedPaginationInput {
+  limit: Int
+  nextToken: String
+}
+
+type Pagination {
+  limit: Int
+  offset: Int
+}
+type Employee {
+  id: Int
+  employeeName: String
+  officeId: Int
+  updatedAt: String
+}
+
+type Office {
+  id: Int
+  officeName: String
+  officeAddress: String
+  employeeId: String
+  updatedAt: String
+}
+type GetEmployeesResponse {
+  items: [Employee]
+  pagination: Pagination
+}
+
+type GetOfficesResponse {
+  items: [Office]
+  pagination: Pagination
+}
+
+type OfficeEmployee {
+  office: Office
+  employee: Employee
+}
+
+type PutResponse {
+  status: String
+}
+type Query {
+  getEmployee(employeeId: Int!): Employee
+  getEmployees(limit: Int, offset: Int, officeId: Int): GetEmployeesResponse
+  getOffice(officeId: Int!): Office
+  getOffices(limit: Int, offset: Int, employeeId: Int): GetOfficesResponse
+}
+
+type Mutation {
+  putOffice(officeName: String, officeAddress: String): PutResponse
+  putEmployee(employeeName: String!): PutResponse
+  joinEmployeeAndOffice(officeId: Int!, employeeId: Int!): PutResponse
+}
+schema {
+  query: Query
+  mutation: Mutation
+}
