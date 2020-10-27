@@ -3,14 +3,13 @@
 <div>
   <a href="https://www.wednesday.is?utm_source=gthb&utm_medium=repo&utm_campaign=serverless" align="left"><img src="https://uploads-ssl.webflow.com/5ee36ce1473112550f1e1739/5f5879492fafecdb3e5b0e75_wednesday_logo.svg"></a>
   <p>
-    <h1 align="left">UUID</h1>
+    <h1 align="left">Offices and Employees</h1>
   </p>
   <p>
-  Write a backend that exposes an endpoint that whenever invoked generates a new UUID, writes that to the database and returns it to the calling client. The  backend should also expose an API that accepts a UUID and updates the updated_at timestamp if its already present in the db, else inserts it.
+   Write a multi-tenant backend for a SAAS ERP solution which allows storage/retrieval/manipulation of offices and employee data. Employees can work in multiple offices and each office can have multiple employees.
   </p>
 
-  ___
-
+---
 
   <p>
     <h4>
@@ -27,19 +26,27 @@
     </a>
   </div>
 
-  ___
+---
 
-  <span>We’re always looking for people who value their work, so come and join us. <a href="https://www.wednesday.is/hiring">We are hiring!</a></span>
+<span>We’re always looking for people who value their work, so come and join us. <a href="https://www.wednesday.is/hiring">We are hiring!</a></span>
+
 </div>
 
 ## Rest APIs
+
 Use API Gateway to expose a backend that provides
-- a GET request that returns a new UUID when invoked and writes the value to a mysql variant of Aurora DB
-- a PUT request that accepts a UUID, updates the updated_at timestamp if its already present in the db, else inserts it.
+
+- a PUT request that writes the employee details to a mysql variant of Aurora DB
+- a PUT request that writes the office details to a mysql variant of Aurora DB
+- a GET request that queries the DB by employeeId and returns the employee info
+- a GET request that queries the DB by officeId and returns the office info
+- a PUT request that associates office with employee
+- a GET request that queries the DB and returns the all the offices or all the offices of a particular employee with pagination support
+- a GET request that queries the DB and returns the all the employees or all the employees of a particular office with pagination support
 
 ## Migrations
 
-Migrations are handled using sequelize. After a successful deployment a migration script is triggered by executing the following command: 
+Migrations are handled using sequelize. After a successful deployment a migration script is triggered by executing the following command:
 `sls migrations up --host=<host> --stage=<stage>`
 
-The host URL is fetched by querying the cloudformation Output for the RDSHost. 
+The host URL is fetched by querying the cloudformation Output for the RDSHost.

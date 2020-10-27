@@ -3,7 +3,7 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define(
-    'uuids',
+    'employees',
     {
       id: {
         autoIncrement: true,
@@ -11,10 +11,19 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false,
         primaryKey: true
       },
-      uuid: {
+      employee_name: {
         type: DataTypes.STRING(36),
         allowNull: false,
-        unique: 'uuid'
+        unique: 'employee_name'
+      },
+      office_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'offices',
+          key: 'id'
+        },
+        unique: 'employees_ibfk_1'
       },
       updated_at: {
         type: DataTypes.DATE,
@@ -24,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     {
       sequelize,
-      tableName: 'uuids',
+      tableName: 'employees',
       timestamps: false
     }
   );

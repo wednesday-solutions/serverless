@@ -31,6 +31,45 @@ functions:
     role: LambdaRDSRole
     events:
       - http: PUT uuids
+  getEmployees:
+    handler: functions/employee/get-employees/index.handler
+    role: LambdaDDBRole
+    events:
+      - http: GET employees
+
+  getEmployee:
+    handler: functions/employee/get-employee/index.handler
+    role: LambdaDDBRole
+    events:
+      - http: GET employee
+
+  getOffices:
+    handler: functions/office/get-offices/index.handler
+    role: LambdaDDBRole
+
+  getOffice:
+    handler: functions/office/get-office/index.handler
+    role: LambdaDDBRole
+    events:
+      - http: GET office
+
+  putEmployee:
+    handler: functions/employee/put-employee/index.handler
+    role: LambdaDDBRole
+    events:
+      - http: PUT employee
+
+  putOffice:
+    handler: functions/office/put-office/index.handler
+    role: LambdaDDBRole
+    events:
+      - http: PUT office
+  joinEmployeeAndOffice:
+    handler: functions/employee-office/join/index.handler
+    role: LambdaDDBRole
+    events:
+      - http: PUT join-employee-office
+
 custom:
   scripts:
     hooks:
@@ -41,14 +80,14 @@ custom:
     DB_NAME: uuids_${env:RDS_PREFIX}_${env:STAGE}
 resources:
   Resources:
-# internet gateway
+    # internet gateway
     ServerlessInternetGateway:
       Type: AWS::EC2::InternetGateway
       Properties:
         Tags:
           - Key: 'Name'
             Value: 'ServerlessInternetGateway'
-# route table
+    # route table
     RouteTablePublic:
       Type: AWS::EC2::RouteTable
       Properties:
@@ -65,7 +104,7 @@ resources:
           Ref: ServerlessInternetGateway
         RouteTableId:
           Ref: RouteTablePublic
-#route table associations
+    #route table associations
     RouteTableAssociationSubnetA:
       Type: AWS::EC2::SubnetRouteTableAssociation
       Properties:
@@ -87,7 +126,7 @@ resources:
           Ref: RouteTablePublic
         SubnetId:
           Ref: ServerlessSubnetC
-# security group
+    # security group
     ServerlessSecurityGroup:
       DependsOn:
         - ServerlessVPC
@@ -104,7 +143,7 @@ resources:
         Tags:
           - Key: 'Name'
             Value: 'ServerlessSecurityGroup'
-# subnets
+    # subnets
     ServerlessSubnetGroup:
       DependsOn:
         - ServerlessSubnetA
@@ -157,7 +196,7 @@ resources:
         Tags:
           - Key: 'Name'
             Value: 'ServerlessSubnetC'
-# vpc
+    # vpc
     ServerlessVPC:
       Type: AWS::EC2::VPC
       Properties:
@@ -175,7 +214,7 @@ resources:
           Ref: ServerlessVPC
         InternetGatewayId:
           Ref: ServerlessInternetGateway
-# rds
+    # rds
     WednesdayRDSCluster:
       Type: AWS::RDS::DBCluster
       DependsOn:
@@ -230,19 +269,19 @@ resources:
       Properties:
         Description: Managed policy to provide access to the RDS
         PolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
-            - Effect: "Allow"
+            - Effect: 'Allow'
               Action:
                 - rds:*
-              Resource: "arn:aws:rds:${env:REGION}:${env:ACCOUNT_ID}:table/*_${env:RDS_PREFIX}_${env:STAGE}"
+              Resource: 'arn:aws:rds:${env:REGION}:${env:ACCOUNT_ID}:table/*_${env:RDS_PREFIX}_${env:STAGE}'
     LambdaRDSRole:
       Type: AWS::IAM::Role
-      Description: "An IAM Role to allow Lambdas to access DDB"
+      Description: 'An IAM Role to allow Lambdas to access DDB'
       Properties:
         RoleName: ${self:service.name}-${self:provider.stage}-lambda-ddb-role
         AssumeRolePolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Action:
