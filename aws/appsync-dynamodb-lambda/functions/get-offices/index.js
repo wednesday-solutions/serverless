@@ -11,7 +11,6 @@ exports.handler = async (event, context, callback) =>
         limit: args.pagination.limit,
         nextToken: args.pagination.nextToken
       });
-      console.log({ officeResponse });
       await Promise.all(
         officeResponse.Items.map(async office => {
           let employeesRes = await getAllEmployees({
