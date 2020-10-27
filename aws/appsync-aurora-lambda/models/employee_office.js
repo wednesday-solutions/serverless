@@ -11,18 +11,6 @@ module.exports = function(sequelize, DataTypes) {
         allowNull: false,
         primaryKey: true
       },
-      office_name: {
-        type: DataTypes.STRING(36),
-        allowNull: false
-      },
-      office_address: {
-        type: DataTypes.STRING(36),
-        allowNull: false
-      },
-      employee_name: {
-        type: DataTypes.STRING(36),
-        allowNull: false
-      },
       employee_id: {
         type: DataTypes.INTEGER,
         allowNull: false,

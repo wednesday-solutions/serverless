@@ -10,18 +10,24 @@ export const handler = async (event, context, callback) =>
         throw new Error('Request Id Missing!');
       }
       let res;
-      const { offices, employeeOffice } = getDB();
+      const officeList = [];
+
+      const { offices, employeeOffice, employees } = getDB();
       if (!employeeId) {
         res = await offices.findAll();
       } else {
-        res = await employeeOffice.findAll({ limit, offset, where: { employee_id: employeeId } });
+        const employeeOfficeRes = await employeeOffice.findAll({ limit, offset, where: { employee_id: employeeId } });
+        await Promise.all(
+          employeeOfficeRes.map(async e => {
+            officeList.push(await offices.findOne({ where: { id: e.dataValues.office_id }, raw: true }));
+          })
+        );
+        res = {
+          officeList: camelcaseKeys(officeList),
+          employee: camelcaseKeys(await employees.findOne({ where: { id: employeeId }, raw: true }))
+        };
       }
-      let response = [];
-      res.map(async e => {
-        await response.push(e.dataValues);
-      });
-      response = camelcaseKeys(response);
-      return success(callback, { items: response, pagination: { limit, offset } });
+      return success(callback, { items: res, pagination: { limit, offset } });
     } catch (err) {
       console.log(err);
       return failure(callback, err);

@@ -7,17 +7,19 @@ export const handler = async (event, context, callback) =>
       if (!getSystemId(event)) {
         throw new Error('Request Id Missing!');
       }
-      const { employees, offices, employeeOffice } = getDB();
-      const employee = await employees.findOne({ where: { id: employeeId }, raw: true });
-      const office = await offices.findOne({ where: { id: officeId }, raw: true });
-      const res = await employeeOffice.upsert({
-        office_id: office.id,
-        employee_id: employee.id,
-        employee_name: employee.employee_name,
-        office_name: office.office_name,
-        office_address: office.office_address
+
+      const { employeeOffice } = getDB();
+
+      const res = await employeeOffice.create({
+        office_id: officeId,
+        employee_id: employeeId
       });
-      return success(callback, { status: res });
+
+      return success(callback, {
+        id: res.id,
+        employeeId: res.employee_id,
+        officeId: res.office_id
+      });
     } catch (err) {
       console.log(err);
       return failure(callback, err);

@@ -27,13 +27,21 @@ type Office {
   employeeId: String
   updatedAt: String
 }
+type EmployeeItem {
+  employeeList: [Employee]
+  office: Office
+}
+type OfficeItem {
+  officeList: [Office]
+  employee: Employee
+}
 type GetEmployeesResponse {
-  items: [Employee]
+  items: EmployeeItem
   pagination: Pagination
 }
 
 type GetOfficesResponse {
-  items: [Office]
+  items: OfficeItem
   pagination: Pagination
 }
 
@@ -45,6 +53,11 @@ type OfficeEmployee {
 type PutResponse {
   status: String
 }
+type JoinResponse {
+  id: Int
+  employeeId: Int
+  officeId: Int
+}
 type Query {
   getEmployee(employeeId: Int!): Employee
   getEmployees(limit: Int, offset: Int, officeId: Int): GetEmployeesResponse
@@ -55,7 +68,7 @@ type Query {
 type Mutation {
   putOffice(officeName: String, officeAddress: String): PutResponse
   putEmployee(employeeName: String!): PutResponse
-  joinEmployeeAndOffice(officeId: Int!, employeeId: Int!): PutResponse
+  joinEmployeeAndOffice(officeId: Int!, employeeId: Int!): JoinResponse
 }
 schema {
   query: Query
