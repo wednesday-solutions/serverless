@@ -1,0 +1,148 @@
+service:
+  name: ${env:NAME}
+plugins:
+  - serverless-appsync-simulator
+  - serverless-appsync-offline
+  - serverless-offline
+  - serverless-appsync-plugin
+  - serverless-dotenv-plugin
+  - serverless-webpack
+  - serverless-appsync-cloudfront
+  - serverless-sequelize-migrations
+  - serverless-plugin-scripts
+
+provider:
+  name: aws
+  timeout: 90
+  runtime: nodejs12.x
+  stage: ${env:STAGE}
+  region: ${env:REGION}
+  versionFunctions: false
+  environment:
+    DB_DIALECT: ${file(./setDBEnvironment.js):env.DB_DIALECT}
+    DB_NAME: ${file(./setDBEnvironment.js):env.DB_NAME}
+    DB_HOST: ${file(./getHost.js)}
+    DB_USERNAME: ${file(./setDBEnvironment.js):env.DB_USERNAME}
+    DB_PASSWORD: ${file(./setDBEnvironment.js):env.DB_PASSWORD}
+    DB_PORT: ${file(./setDBEnvironment.js):env.DB_PORT}
+custom:
+  name: ${self:service.name}
+  AURORA:
+    VPC_CIDR: 10
+    DB_NAME: ${env:RDS_PREFIX}_${env:STAGE}
+  webpack:
+    includeModules: true
+    excludeFiles: ./**/*.test.js
+  appsync-offline:
+    port: 62222
+  appsync-emulator:
+    buildPrefix: .webpack/service
+  appSync:
+    logConfig:
+      level: ALL
+      excludeVerboseContent: false
+    name: ${self:service.name}
+    serviceRole: AuthenticatedAppSyncServiceRole
+    authenticationType: API_KEY
+    mappingTemplatesLocation: resolvers/
+    mappingTemplates:
+      - ${file(./resources/mapping-templates/queries.yml)}
+      - ${file(./resources/mapping-templates/mutations.yml)}
+    dataSources:
+      - ${file(./resources/lambdas/datasources.yml)}
+  appSyncCloudFront:
+    domainName: api-${env:STAGE}.${env:DOMAIN}
+    stage: ${env:STAGE}
+    certificate: arn:aws:acm:us-east-1:${env:ACCOUNT_ID}:certificate/${env:ACM_ARN}
+    querystring: all
+    priceClass: PriceClass_100
+    minimumProtocolVersion: TLSv1.2_2019
+functions: ${file(./resources/lambdas/functions.yml)}
+package:
+  individually: true
+resources:
+  Resources:
+    # rds
+    WednesdayRDSCluster:
+      Type: AWS::RDS::DBCluster
+      DependsOn:
+        - ServerlessSecurityGroup
+      Properties:
+        MasterUsername: ${env:RDS_USERNAME}_${env:STAGE}
+        MasterUserPassword: ${env:DB_PASSWORD}
+        DBSubnetGroupName:
+          Ref: ServerlessSubnetGroup
+        Engine: aurora
+        EngineVersion: '5.6'
+        DatabaseName: ${self:custom.AURORA.DB_NAME}
+        BackupRetentionPeriod: 3
+        DBClusterParameterGroupName:
+          Ref: WednesdayRDSClusterParameter
+        VpcSecurityGroupIds:
+          - !Ref 'ServerlessSecurityGroup'
+    WednesdayRDSClusterParameter:
+      Type: AWS::RDS::DBClusterParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: aurora5.6
+        Parameters:
+          character_set_database: 'utf32'
+    WednesdayRDSDBInstance:
+      DependsOn:
+        - ServerlessVPCGA
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceClass: db.t2.small
+        DBSubnetGroupName:
+          Ref: ServerlessSubnetGroup
+        Engine: aurora
+        EngineVersion: '5.6'
+        PubliclyAccessible: true
+        DBParameterGroupName:
+          Ref: WednesdayRDSDBParameterGroup
+        DBClusterIdentifier:
+          Ref: WednesdayRDSCluster
+    WednesdayRDSDBParameterGroup:
+      Type: AWS::RDS::DBParameterGroup
+      Properties:
+        Description: Parameter group for the Serverless Aurora RDS DB.
+        Family: aurora5.6
+        Parameters:
+          sql_mode: IGNORE_SPACE
+          max_connections: 100
+          wait_timeout: 900
+          interactive_timeout: 900
+    RDSPolicy:
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        Description: Managed policy to provide access to the RDS
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Action:
+                - rds:*
+              Resource: 'arn:aws:rds:${env:REGION}:${env:ACCOUNT_ID}:table/*_${env:RDS_PREFIX}_${env:STAGE}'
+    LambdaRDSRole:
+      Type: AWS::IAM::Role
+      Description: 'An IAM Role to allow Lambdas to access DDB'
+      Properties:
+        RoleName: ${self:service.name}-${self:provider.stage}-lambda-ddb-role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+  Outputs:
+    WednesdayRDSHost:
+      Description: Host of the wednesday RDS instance
+      Value:
+        Fn::GetAtt: [WednesdayRDSCluster, Endpoint.Address]
+    WednesdayRDSPort:
+      Description: Port of the wednesday RDS instance
+      Value:
+        Fn::GetAtt: [WednesdayRDSCluster, Endpoint.Port]

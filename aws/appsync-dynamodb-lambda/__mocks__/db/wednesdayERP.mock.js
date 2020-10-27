@@ -70,7 +70,6 @@ export function successGetEmployeesByOfficeId({ systemId, officeId }) {
 
 export function successGetEmployees({ systemId, limit, nextToken, officeId }) {
   AWS.mock('DynamoDB.DocumentClient', 'query', async function(params, callback) {
-    console.log({ params });
     expect(params.ExpressionAttributeNames).toEqual({
       '#PK': 'PK',
       '#SK': 'SK'

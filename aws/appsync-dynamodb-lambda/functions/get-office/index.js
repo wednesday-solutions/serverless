@@ -7,7 +7,6 @@ exports.handler = async (event, context, callback) =>
     const args = event.arguments;
     try {
       const office = await getOffice({ ...getSystemId(event), officeId: args.officeId });
-      console.log({ office });
 
       let employeeRes = await getAllEmployees({
         ...getSystemId(event),

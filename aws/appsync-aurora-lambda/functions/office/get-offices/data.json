@@ -1,0 +1,7 @@
+{
+  "arguments": { "employeeId": 1 },
+  "headers": {
+    "content-type": "application/json",
+    "x-ws-system-id": "WS"
+  }
+}
