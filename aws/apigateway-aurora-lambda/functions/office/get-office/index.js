@@ -8,7 +8,6 @@ export const handler = async (event, context, callback) =>
         throw new Error('Request Id Missing!');
       }
       const res = await getDB().offices.findOne({ where: { id: officeId }, raw: true });
-      console.log({ res });
       return success(callback, {
         status: 200,
         body: JSON.stringify({ res })
