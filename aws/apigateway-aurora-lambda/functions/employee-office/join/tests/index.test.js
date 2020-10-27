@@ -1,5 +1,4 @@
 import { resetAndMockDB } from '@utils/testUtils';
-import { CONSTANTS } from '@mocks/constants';
 
 describe('join-office-employee', () => {
   let event;

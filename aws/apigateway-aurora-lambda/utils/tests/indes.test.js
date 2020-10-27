@@ -1,5 +1,4 @@
 import { failure, success, logHandler, getSystemId } from '@utils';
-import { CONSTANTS } from '@mocks/constants';
 describe('utils/index', () => {
   let mocks;
   beforeEach(() => {
