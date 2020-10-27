@@ -1,4 +1,4 @@
-import { CONSTANTS } from '@mocks/constants';
+import { CONSTANTS, GET_EMP_BY_OFF_ID } from '@mocks/constants';
 import { resetAndMockDB } from '@utils/testUtils';
 
 describe('get-employees', () => {
@@ -30,7 +30,7 @@ describe('get-employees', () => {
 
   it('should fetch all employees of the given officeId', async () => {
     await resetAndMockDB(mockDbs => {
-      mockDbs.employeeOffice.findAll = () => [CONSTANTS.employee];
+      mockDbs.employeeOffice.findAll = () => [{ dataValues: CONSTANTS.employee }];
     });
     const handler = require('../index').handler;
     await handler(event, null, mocks.callback);
@@ -39,7 +39,7 @@ describe('get-employees', () => {
     expect(mocks.callback.mock.calls[0][1]).toBeTruthy();
     expect(mocks.callback.mock.calls[0][1]).toEqual({
       status: 200,
-      body: JSON.stringify({ res: [CONSTANTS.employee] })
+      body: GET_EMP_BY_OFF_ID
     });
   });
 

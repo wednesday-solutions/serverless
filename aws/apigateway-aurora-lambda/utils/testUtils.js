@@ -36,6 +36,7 @@ export function configDB() {
 
   employeeOfficeMock.findAll = query => employeeOfficeMock.findAll(query);
   employeeOfficeMock.upsert = query => employeeOfficeMock.upsert(query);
+  employeeOfficeMock.create = query => employeeOfficeMock.create(query);
 
   return {
     uuids: uuidsMock,
