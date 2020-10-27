@@ -21,6 +21,6 @@ export const CONSTANTS = {
   }
 };
 export const GET_EMP_BY_OFF_ID =
-  '{"res":{"employeeList":[{"office_name":"Wednesday Solutions","office_address":"Pune, MH, India","employee_id":null,"updated_at":"2000-11-22 05:30:0:00","id":1,"createdAt":"2000-11-22T00:00:00.000Z","updatedAt":"2000-11-22T00:00:00.000Z"}],"office":{"office_name":"Wednesday Solutions","office_address":"Pune, MH, India","employee_id":null,"updated_at":"2000-11-22 05:30:0:00","id":1,"createdAt":"2000-11-22T00:00:00.000Z","updatedAt":"2000-11-22T00:00:00.000Z"}}}';
+  '{"res":{"employeeList":[{"employee_name":"Tapan","office_id":null,"updated_at":"2000-11-22 05:30:0:00","id":1,"createdAt":"2000-11-22T00:00:00.000Z","updatedAt":"2000-11-22T00:00:00.000Z"}],"office":{"office_name":"Wednesday Solutions","office_address":"Pune, MH, India","employee_id":null,"updated_at":"2000-11-22 05:30:0:00","id":1,"createdAt":"2000-11-22T00:00:00.000Z","updatedAt":"2000-11-22T00:00:00.000Z"}}}';
 export const GET_OFF_BY_EMP_ID =
   '{"res":{"officeList":[{"office_name":"Wednesday Solutions","office_address":"Pune, MH, India","employee_id":null,"updated_at":"2000-11-22 05:30:0:00","id":1,"createdAt":"2000-11-22T00:00:00.000Z","updatedAt":"2000-11-22T00:00:00.000Z"}],"employee":{"employee_name":"Tapan","office_id":null,"updated_at":"2000-11-22 05:30:0:00","id":1,"createdAt":"2000-11-22T00:00:00.000Z","updatedAt":"2000-11-22T00:00:00.000Z"}}}';

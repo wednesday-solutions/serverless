@@ -25,7 +25,6 @@ export const handler = async (event, context, callback) =>
           employee: await employees.findOne({ where: { id: employeeId }, raw: true })
         };
       }
-      console.log({ '###': JSON.stringify({ res }) });
       return success(callback, {
         status: 200,
         body: JSON.stringify({ res })
