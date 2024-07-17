@@ -1,0 +1,30 @@
+Resources:
+  dynamoDBPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed policy to provide access to SNS
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - dynamodb:*
+            Resource: 'arn:aws:dynamodb:${env:REGION}:*:table/*-${self:service.name}-${self:provider.stage}'
+  LambdaDDBRole:
+    Type: AWS::IAM::Role
+    Description: 'An IAM Role to allow Lambdas to access DDB'
+    DependsOn:
+      - dynamoDBPolicy
+    Properties:
+      RoleName: ${self:service.name}-${self:provider.stage}-lambda-ddb-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      ManagedPolicyArns:
+        - Ref: dynamoDBPolicy
