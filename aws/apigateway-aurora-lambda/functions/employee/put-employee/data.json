@@ -1,0 +1,7 @@
+{
+  "body": "{\"employeeName\":\"Mac\"}",
+  "headers": {
+    "content-type": "application/json",
+    "x-ws-system-id": "WS"
+  }
+}

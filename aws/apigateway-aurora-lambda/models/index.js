@@ -28,8 +28,14 @@ function getDB() {
     );
   }
   const uuids = require('@models/uuids');
+  const employees = require('@models/employees');
+  const offices = require('@models/offices');
+  const employeeOffice = require('@models/employee_office');
 
   db.uuids = uuids(sequelize, Sequelize.DataTypes);
+  db.employees = employees(sequelize, Sequelize.DataTypes);
+  db.offices = offices(sequelize, Sequelize.DataTypes);
+  db.employeeOffice = employeeOffice(sequelize, Sequelize.DataTypes);
 
   Object.keys(db).forEach(modelName => {
     if (db[modelName].associate) {

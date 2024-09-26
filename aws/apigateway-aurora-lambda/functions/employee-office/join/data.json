@@ -1,0 +1,7 @@
+{
+  "body": "{\"employeeId\":1, \"officeId\":2}",
+  "headers": {
+    "content-type": "application/json",
+    "x-ws-system-id": "WS"
+  }
+}
